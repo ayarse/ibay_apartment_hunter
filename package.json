@@ -1,0 +1,36 @@
+{
+  "name": "ibay_apartment_hunter",
+  "version": "0.1.0",
+  "description": "",
+  "main": "build/app.js",
+  "homepage": "https://github.com/ayarse/ibay_apartment_hunter",
+  "bugs": {
+    "url": "https://github.com/ayarse/ibay_apartment_hunter/issues"
+  },
+  "scripts": {
+    "start": "ts-node src/app.ts",
+    "start:node": "node build/app.js",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn ./src/app.ts",
+    "clean": "rm -r ./build"
+  },
+  "author": "ayarse",
+  "license": "MIT",
+  "dependencies": {
+    "@sentry/node": "^6.1.0",
+    "@sentry/tracing": "^6.1.0",
+    "@types/better-sqlite3": "^5.4.1",
+    "axios": "^0.19.0",
+    "better-sqlite3": "^7.1.2",
+    "cheerio": "^1.0.0-rc.5",
+    "dotenv": "^8.2.0",
+    "telegraf": "^4.0.1",
+    "telegraf-inline-menu": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^4.1.3"
+  }
+}
