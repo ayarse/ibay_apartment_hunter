@@ -10,6 +10,7 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "start:node": "node build/app.js",
+    "start:forever": "forever start -a --uid iaparthunter build/app.js",
     "build": "tsc",
     "dev": "ts-node-dev --respawn ./src/app.ts",
     "clean": "rm -r ./build"
