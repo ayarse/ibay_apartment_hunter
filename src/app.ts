@@ -4,6 +4,7 @@ import { IbayScraper } from "./lib/IbayScraper";
 import { MenuTemplate, MenuMiddleware } from "telegraf-inline-menu";
 import { IbayListing } from "./lib/IbayListing";
 import * as Sentry from "@sentry/node";
+import { Console } from "console";
 
 require("dotenv").config();
 
@@ -31,7 +32,13 @@ const notifyUsers = function (locationPref: string, listings: IbayListing[]) {
     users.forEach((user, _index) => {
         if (globalThis.debugMode && user.tg_id !== parseInt(globalThis.debugUser)) return;
         listings.forEach((listing, _i) => {
-            tg.telegram.sendMessage(user.tg_id, listing.fullUrl);
+            tg.telegram.sendMessage(user.tg_id, listing.fullUrl)
+                .catch((err) => {
+                    if (err.response.error_code == 403 && err.description == "Forbidden: bot was blocked by the user") {
+                        botDB.removeSubscriber(user.tg_id);
+                        console.log(`User ${user.tg_id} has blocked bot. Removed from db.`)
+                    }
+                });
         });
     });
 };
