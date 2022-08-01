@@ -88,7 +88,7 @@ menuTemplate.choose('location', ['All', 'Male', 'Hulhumale', 'Villigili'], {
 const menuMiddleware = new MenuMiddleware('/', menuTemplate);
 tg.use(menuMiddleware);
 
-tg.command('location', ctx => menuMiddleware.replyToContext(ctx));
+tg.command('location', ctx => menuMiddleware.replyToContext(ctx as unknown as MyContext));
 
 tg.command('start', async (ctx) => {
     const chat_id = ctx.chat.id.toString();
@@ -104,7 +104,7 @@ tg.command('start', async (ctx) => {
         /stop - Unsubscribe from updates
         /location - Change your preferred location
         `)
-        menuMiddleware.replyToContext(ctx);
+        menuMiddleware.replyToContext(ctx as unknown as MyContext);
     }
 });
 
