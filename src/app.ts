@@ -17,7 +17,7 @@ declare global {
     var debugUser: string;
 }
 
-globalThis.debugMode = process.env.DEBUG == "TRUE" ? true : false;
+globalThis.debugMode = process.env.DEBUG === "TRUE";
 globalThis.debugUser = process.env.DEBUG_USER;
 
 const botDB = BotDB.getInstance();
