@@ -1,5 +1,6 @@
 .vscode
 .env
+*.db
 build/
 node_modules/
 ibay_apartment_hunter.db
