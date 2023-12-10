@@ -5,3 +5,4 @@ build/
 node_modules/
 ibay_apartment_hunter.db
 package-lock.json
+docker/pgdata/
