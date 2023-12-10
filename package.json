@@ -1,8 +1,9 @@
 {
   "name": "ibay_apartment_hunter",
-  "version": "0.1.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "Telegram Bot to fetch the latest apartment listings from iBay and other sources in Maldives",
   "main": "build/app.js",
+  "type": "module",
   "homepage": "https://github.com/ayarse/ibay_apartment_hunter",
   "bugs": {
     "url": "https://github.com/ayarse/ibay_apartment_hunter/issues"
@@ -10,44 +11,42 @@
   "scripts": {
     "start": "tsx ./src/app.ts",
     "start:node": "node build/app.js",
-    "start:forever": "forever start -a --uid iaparthunter build/app.js",
-    "build": "tsc",
     "dev": "tsx watch ./src/app.ts",
-    "migrate": "env-cmd -f .env knex --knexfile ./src/knexfile.ts migrate:latest",
-    "clean": "rm -r ./build"
+    "build": "tsc",
+    "clean": "rm -r ./build",
+    "generate": "drizzle-kit generate:pg",
+    "migrate": "env-cmd -f ./.env tsx scripts/migrate.ts",
+    "push": "drizzle-kit push:pg"
   },
   "author": "ayarse",
   "license": "MIT",
   "dependencies": {
-    "@sentry/node": "^7.28.1",
+    "@sentry/node": "^7.86.0",
     "@sentry/tracing": "^7.28.1",
-    "@types/better-sqlite3": "^7.6.3",
-    "axios": "^1.2.1",
-    "better-sqlite3": "^8.0.1",
     "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.1",
     "env-cmd": "^10.1.0",
-    "knex": "^2.3.0",
-    "pino": "^8.8.0",
-    "pino-pretty": "^9.1.1",
+    "grammy": "^1.19.2",
+    "grammy-inline-menu": "^8.0.1",
+    "pino": "^8.16.2",
+    "pino-pretty": "^10.2.3",
+    "postgres": "^3.4.3",
     "sqlite3": "^5.1.4",
-    "telegraf": "^4.11.2",
-    "telegraf-inline-menu": "^6.2.1",
-    "tsx": "^3.12.1",
-    "znv": "^0.3.2",
-    "zod": "^3.20.2"
+    "tsx": "^4.6.2",
+    "znv": "^0.4.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@shopify/eslint-plugin": "^42.0.2",
-    "@types/node": "^18.11.17",
-    "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.47.0",
+    "@types/node": "^20.10.4",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "drizzle-kit": "^0.20.6",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-filenames-simple": "^0.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "2.8.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.4"
+    "typescript": "^5.3.3"
   }
 }
