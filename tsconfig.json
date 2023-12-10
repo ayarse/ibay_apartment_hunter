@@ -1,11 +1,13 @@
 {
   "include": ["./src/**/*"],
+  "exclude": ["node_modules", "**/node_modules/*"],
   "compilerOptions": {
-    "target": "ESNext",
+    "lib": ["ESNext"],
+    "target": "ES2022",
     "module": "ESNext",
     "outDir": "./build",
     "strict": false,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true
   }
 }

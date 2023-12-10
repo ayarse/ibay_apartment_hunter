@@ -3,13 +3,7 @@
     "node": true,
     "es2021": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@shopify/esnext",
-    "plugin:@shopify/typescript",
-    "plugin:@shopify/prettier"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -18,6 +12,14 @@
   },
   "plugins": ["@typescript-eslint", "filenames-simple"],
   "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
     "filenames-simple/extension": "error",
     "filenames-simple/naming-convention": ["error", { "rule": "kebab-case" }]
   }
