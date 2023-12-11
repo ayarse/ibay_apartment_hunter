@@ -1,44 +1,67 @@
 # iBay Apartment Hunter Bot
 
-A Telegram bot to notify apartment listings from iBay.com.mv. A live version of the bot can be (hopefully) found at
+A Telegram bot to notify apartment listings from iBay.com.mv. A live version of
+the bot can be (hopefully) found at
 [@ibay_apartment_hunter_bot](https://t.me/ibay_apartment_hunter_bot).
 
-I made this bot first as just a quick n' dirty one file-r being run as a cron with pretty much everything hardcoded, for
-my own use while I was looking for an apartment some time back. Since then some of my friends have also found this bot
-useful so I've cleaned this up quite a bit from it's \*ahem\* somewhat humble beginnings and decided to make it public.
+I'd initially made this bot for personal use while hunting for an apartment some
+time back. It was a quick n' dirty one filer run with cron with pretty much
+everything hardcoded. Since then some of my friends have also found this bot
+useful so I've cleaned this up quite a bit from it's \*ahem\* somewhat humble
+beginnings and decided to make it public.
 
-It's written in Typescript using the [Telegraf](https://github.com/telegraf/telegraf/) framework,
-[cheerio](https://github.com/cheeriojs/cheerio) for scraping, and
-[better-sqlite3](https://github.com/JoshuaWise/better-sqlite3/) with Sentry for error tracking. I've only tested on
-ts-node.
+## Stack
+
+- TypeScript
+- PostgreSQL
+- Puppeteer
+- [tsx](https://github.com/esbuild-kit/tsx)
+- [PNPM](https://pnpm.io/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [grammY](https://grammy.dev/)
+- Docker Compose
 
 ## Installation
 
 ```bash
-npm install
+# Install dependencies
+pnpm install
+
+# Run Drizzle Migrations
+pnpm migrate
 ```
 
-You'll need to add your own configuration in a .env file as shown in [.env.example](.env.example).
+| Environment Variable | Type    | Use                                                                                                                             |
+| -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `DEBUG`              | boolean | When `DEBUG` mode is enabled notifications to subscribers are suppressed and the `DEBUG_USER` is sent all the messages instead. |
+| `DEBUG_USER`         | string  | A Telegram ID. Think of this as the Admin User                                                                                  |
+| `TIMER_INTERVAL`     | number  | The interval at which the scrapers are run, in minutes.                                                                         |
+| `SENTRY_DSN`         | string  | [Sentry](https://sentry.io/) for logging errors.                                                                                |
+| `DATABASE_URL`       | string  | PostgreSQL Connection String. Try [Supabase](https://supabase.com/).                                                            |
+| `TELEGRAM_TOKEN`     | string  | Telegram API Token. Get from @botfather                                                                                         |
 
-```
-DEBUG=
-DEBUG_USER=
-DEBUG_LAST_CHECKED=
-SENTRY_DSN=
-TELEGRAM_TOKEN=
-TIMER_INTERVAL=
+```bash
+DEBUG=true
+DEBUG_USER=12345678
+TIMER_INTERVAL=10
+
+SENTRY_DSN=https://xxx@xxx.ingest.sentry.io/xxx
+DATABASE_URL=postgres://user:password@localhost:5432/apartmentbot_db?sslmode=disable
+TELEGRAM_TOKEN=12345678:XXXXXXXXXXXXXXXXXXXXX-XX
+
+# For use during development with Docker Compose
+POSTGRES_PASSWORD=user
+POSTGRES_USER=password
+POSTGRES_DB=apartmentbot_db
+POSTGRES_PORT=5432
 ```
 
 ## Usage
 
 ```bash
-# Running the bot
+# Start with tsx
 npm run start
 
-# Or for plain ol' Node
+# Start with Node
 npm run start:node
 ```
-
-## Contributing
-
-Contributions are welcome and I'm not so good at TS so feel free to throw in some pointers. 😅
