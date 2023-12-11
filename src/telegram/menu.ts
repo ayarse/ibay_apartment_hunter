@@ -1,7 +1,7 @@
 import type { Context } from 'grammy';
 import { MenuMiddleware, MenuTemplate } from 'grammy-inline-menu';
-import { UserService } from './services';
-import { Locations } from './types';
+import { UserService } from '../services';
+import { Locations } from '../types';
 
 const menuTemplate = new MenuTemplate<Context>(
   (_ctx) => `Select your preferred location`,
@@ -17,7 +17,7 @@ menuTemplate.select(
       await ctx.answerCallbackQuery(
         `Ok! Location is set to ${key}. Let's get this party started!`,
       );
-      await ctx.deleteMessage();
+      // await ctx.deleteMessage();
 
       return true;
     },

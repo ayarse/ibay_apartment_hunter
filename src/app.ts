@@ -3,11 +3,10 @@ import { bot as tg } from './clients';
 import { env } from './config';
 import { logger } from './util/logger';
 
-import './commands';
-import initCommands from './commands';
 import './listeners';
 import { IBayScraper } from './scrapers/ibay';
 import { notifyAdmin } from './services/notif-service';
+import initCommands from './telegram/commands';
 import { Locations } from './types';
 import { minsToMs } from './util';
 
@@ -28,7 +27,6 @@ await initCommands();
  */
 tg.start();
 
-logger.info('Running scraper...');
 const ibayScraper = new IBayScraper();
 
 const scraperFns = [
@@ -39,6 +37,7 @@ const scraperFns = [
 ];
 
 const scraperInt = setInterval(() => {
+  logger.info('Running scrapers...');
   scraperFns.forEach((fn) => fn());
 }, minsToMs(env.TIME_INTERVAL));
 
