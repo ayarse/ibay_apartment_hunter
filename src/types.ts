@@ -1,25 +1,13 @@
-import { Context as TelegrafContext } from 'telegraf';
-
 export enum Locations {
   All = 'All',
   Hulhumale = 'Hulhumale',
   Male = 'Male',
   Villigili = 'Villigili',
 }
-
-export type MyContext = TelegrafContext & {
-  match: RegExpExecArray | undefined;
-};
-
-export interface Scraper {
-  scraperBaseUrl: string;
-  getResults(): Promise<ItemListing[]>;
-}
-
-export interface ItemListing {
-  url: string;
+export interface Listing {
+  id: string;
   title: string;
-  price: string;
-  UUID: string;
-  UUIDhash: string;
+  url: string;
+  price?: string | undefined;
+  location?: string | undefined;
 }

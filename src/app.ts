@@ -5,7 +5,11 @@ import { logger } from './util/logger';
 
 import './commands';
 import initCommands from './commands';
-import { notifyAdmin } from './lib/helpers';
+import './listeners';
+import { IBayScraper } from './scrapers/ibay';
+import { notifyAdmin } from './services/notif-service';
+import { Locations } from './types';
+import { minsToMs } from './util';
 
 Sentry.init({
   dsn: env.SENTRY_DSN,
@@ -24,6 +28,20 @@ await initCommands();
  */
 tg.start();
 
+logger.info('Running scraper...');
+const ibayScraper = new IBayScraper();
+
+const scraperFns = [
+  () => ibayScraper.getUpdates(Locations.All),
+  () => ibayScraper.getUpdates(Locations.Male),
+  () => ibayScraper.getUpdates(Locations.Hulhumale),
+  () => ibayScraper.getUpdates(Locations.Villigili),
+];
+
+const scraperInt = setInterval(() => {
+  scraperFns.forEach((fn) => fn());
+}, minsToMs(env.TIME_INTERVAL));
+
 tg.catch((err) => {
   logger.error(err);
   Sentry.captureException(err);
@@ -31,6 +49,7 @@ tg.catch((err) => {
 
 const stopTg = async () => {
   notifyAdmin('Bot is shutting down...');
+  clearInterval(scraperInt);
   await tg.stop();
 };
 

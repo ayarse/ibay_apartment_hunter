@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import { parseEnv } from 'znv';
 import { z } from 'zod';
-import { IbayScraper } from './lib/IbayScraper';
 
 dotenv.config();
 
@@ -9,6 +8,7 @@ export const env = parseEnv(process.env, {
   DEBUG: z.boolean().default(true),
   DEBUG_USER: z.string(),
   DEBUG_LAST_CHECKED: z.string(),
+  TIME_INTERVAL: z.number().default(10),
 
   TELEGRAM_TOKEN: z.string(),
   SENTRY_DSN: z.string(),
@@ -20,11 +20,11 @@ export const env = parseEnv(process.env, {
   POSTGRES_PORT: z.string(),
 });
 
-export const scrapers = [
-  new IbayScraper('all'),
-  new IbayScraper('male'),
-  new IbayScraper('hulhumale'),
-  new IbayScraper('villigili'),
-];
+// export const scrapers = [
+//   new IbayScraper('all'),
+//   new IbayScraper('male'),
+//   new IbayScraper('hulhumale'),
+//   new IbayScraper('villigili'),
+// ];
 
 export default env;
