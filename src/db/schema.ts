@@ -8,7 +8,7 @@ export const config = pgTable('config', {
 export const subscribers = pgTable('subscribers', {
   id: serial('id').primaryKey(),
   tg_id: varchar('tg_id', { length: 255 }).unique(),
-  pref_location: varchar('pref_location', { length: 50 }).default('male'),
+  pref_location: varchar('pref_location', { length: 50 }).default('Male'),
   created_at: timestamp('created_at').defaultNow(),
   deleted_at: timestamp('deleted_at'),
 });
