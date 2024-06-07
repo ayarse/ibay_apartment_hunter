@@ -11,7 +11,7 @@
   "scripts": {
     "start": "tsx ./src/app.ts",
     "start:node": "node build/app.js",
-    "dev": "tsx watch ./src/app.ts",
+    "dev": "tsx watch ./src/app.ts  --inspect",
     "build": "tsc",
     "clean": "rm -r ./build",
     "generate": "drizzle-kit generate:pg",
