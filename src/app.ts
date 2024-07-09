@@ -1,3 +1,4 @@
+import http from 'node:http';
 import * as Sentry from '@sentry/node';
 import { bot as tg } from './clients';
 import { env } from './config';
@@ -51,6 +52,13 @@ const stopTg = async () => {
   clearInterval(scraperInt);
   await tg.stop();
 };
+
+http
+  .createServer((_, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('OK');
+  })
+  .listen(process.env.PORT || 3000);
 
 process.once('SIGINT', stopTg);
 process.once('SIGTERM', stopTg);
