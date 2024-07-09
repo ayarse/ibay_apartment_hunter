@@ -18,6 +18,8 @@ RUN pnpm install
 
 EXPOSE ${PORT}
 
+ENV NODE_OPTIONS="--dns-result-order=ipv4first"
+
 HEALTHCHECK CMD curl --fail http://0.0.0.0:${PORT} || exit 1
 
 # Start App
