@@ -14,7 +14,11 @@ RUN npm install -g pnpm
 RUN pnpm install
 
 # Install pm2 globally
-RUN npm install -g pm2
+# RUN npm install -g pm2
 
-# Set the command to start the application using pm2 and the ecosystem.config.cjs file
-CMD ["pm2-runtime", "start", "./ecosystem.config.cjs"]
+EXPOSE ${PORT}
+
+HEALTHCHECK CMD curl --fail http://0.0.0.0:${PORT} || exit 1
+
+# Start App
+CMD ["node", "--import", "tsx", "src/app.ts"]
