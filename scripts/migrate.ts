@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename);
 
 await migrate(drizzle(migrationClient), {
   migrationsFolder: path.join(__dirname, '../src/db/migrations/'),
+  migrationsSchema: 'public',
 });
 
 await migrationClient.end();
