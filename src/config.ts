@@ -12,6 +12,7 @@ export const env = parseEnv(process.env, {
   TELEGRAM_TOKEN: z.string(),
   SENTRY_DSN: z.string(),
   DATABASE_URL: z.string(),
+  IBAY_BASE_URL: z.string(),
 
   POSTGRES_PASSWORD: z.string().optional(),
   POSTGRES_USER: z.string().optional(),
