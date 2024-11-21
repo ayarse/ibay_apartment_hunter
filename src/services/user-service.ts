@@ -85,3 +85,12 @@ export const getUsersByPref = async (pref: string): Promise<Subscriber[]> => {
 
   return res;
 };
+
+export const getAllSubscribers = async (): Promise<Subscriber[]> => {
+  const res = await db
+    .select()
+    .from(subscribers)
+    .where(isNull(subscribers.deleted_at));
+
+  return res;
+};

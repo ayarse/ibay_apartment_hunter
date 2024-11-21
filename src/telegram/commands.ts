@@ -67,4 +67,28 @@ export default async function initCommands() {
     const count = await UserService.countUsers();
     ctx.reply(`${count}`);
   });
+
+  /**
+   * [ /announce ] - Send a message to all users.
+   * This command can only be used by the admin/debug user.
+   */
+  bot.command('announce', async (ctx) => {
+    if (ctx.chat.id.toString() !== env.DEBUG_USER) {
+      ctx.reply(`You don't have permission to use this command.`);
+      return;
+    }
+
+    const message = ctx.message.text.split(' ').slice(1).join(' ');
+    if (!message) {
+      ctx.reply(`Please provide a message to announce.`);
+      return;
+    }
+
+    const subscribers = await UserService.getAllSubscribers();
+    subscribers.forEach(async ({ tg_id }) => {
+      await bot.api.sendMessage(tg_id, message);
+    });
+
+    ctx.reply(`Announcement sent to all users.`);
+  });
 }
