@@ -8,7 +8,6 @@ import './listeners';
 import { IBayScraper } from './scrapers/ibay';
 import { notifyAdmin } from './services/notif-service';
 import initCommands from './telegram/commands';
-import { Locations } from './types';
 import { minsToMs } from './util';
 
 Sentry.init({
@@ -30,12 +29,7 @@ tg.start();
 
 const ibayScraper = new IBayScraper();
 
-const scraperFns = [
-  () => ibayScraper.getUpdates(Locations.All),
-  () => ibayScraper.getUpdates(Locations.Male),
-  () => ibayScraper.getUpdates(Locations.Hulhumale),
-  () => ibayScraper.getUpdates(Locations.Villigili),
-];
+const scraperFns = [() => ibayScraper.getUpdates()];
 
 const scraperInt = setInterval(() => {
   logger.info('Running scrapers...');

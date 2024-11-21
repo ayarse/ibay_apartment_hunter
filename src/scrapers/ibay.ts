@@ -1,69 +1,72 @@
-import { ElementHandle } from 'puppeteer';
-import { IBAY_URLS } from '../constants';
+import { CheerioCrawler, Configuration } from 'crawlee';
 import { ConfigService } from '../services';
 import { Listing, Locations } from '../types';
-import { getBrowser, trimObjectValues } from '../util';
+import { trimObjectValues } from '../util';
 import { Events, eventBus } from '../util/event-bus';
 
+const ibayBaseUrl = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';
+
+export const IBAY_URLS = {
+  [Locations.All]: `${ibayBaseUrl}/index.php?page=search&s_res=AND&cid=25&off=0&lang=&s_by=hw_added`,
+  [Locations.Male]: `${ibayBaseUrl}/index.php?page=search&s_res=AND&cid=25&off=0&lang=&s_by=hw_added&reg1_ex=11&reg2_ex=100`,
+  [Locations.Hulhumale]: `${ibayBaseUrl}/index.php?page=search&s_res=AND&cid=25&s_by=hw_added&f_location_ex=Male+--+HulhuMale`,
+  [Locations.Villigili]: `${ibayBaseUrl}/index.php?page=search&s_res=AND&cid=25&s_by=hw_added&f_location_ex=Male+--+Villingili`,
+};
+
 export class IBayScraper {
-  public async getUpdates(location: Locations = Locations.All) {
-    const LATEST_CONFIG_KEY = `ibay_latest_item_id_${location}`;
+  public async getUpdates() {
+    const urls = Object.values(IBAY_URLS);
 
-    const url = IBAY_URLS[location];
-    const browser = await getBrowser();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    const crawler = new CheerioCrawler(
+      {
+        async requestHandler({ request, $ }) {
+          const listings = $('.bg-light.latest-list-item');
+          const listingData: Listing[] = [];
+          const currentUrl = request.url;
+          const location = Object.keys(IBAY_URLS).find(
+            (key) => IBAY_URLS[key] === currentUrl,
+          );
+          const configKey = `ibay_latest_item_id_${location}`;
+          const currentLatest = await ConfigService.getConfigByKey(configKey);
 
-    const latest = await ConfigService.getConfigByKey(LATEST_CONFIG_KEY);
-    console.log(location, 'Latest ID', latest);
+          console.log('Current location', location);
 
-    const listings = await page.$$('.bg-light.latest-list-item');
+          listings.each((index, el) => {
+            const title = $(el).find('h5 > a').text();
+            const url = $(el).find('h5 > a').attr('href');
+            const price = $(el).find('.col.s8 > .price').text();
+            const id = /o([0-9]+)\.html/.exec(url as string)?.[1];
 
-    const listingData = await Promise.allSettled<Listing>(
-      listings.map(this.extractData.bind(this)),
+            const data = trimObjectValues({
+              id,
+              title,
+              url: new URL(url, 'https://ibay.com.mv').toString(),
+              price,
+              location,
+            });
+
+            listingData.push(data);
+
+            // Emit the new item event only if the current item ID is greater than the latest item ID
+            if (parseInt(currentLatest, 10) < parseInt(id, 10)) {
+              eventBus.emit(Events.NewIBayItem, data);
+            }
+          });
+
+          // Update the configuration with the latest item ID for the current location
+          await ConfigService.setConfig(
+            `ibay_latest_item_id_${location}`,
+            listingData[0].id,
+          );
+        },
+      },
+      new Configuration({
+        persistStorage: false,
+      }),
     );
 
-    listingData.forEach((data) => {
-      if (
-        data.status === 'fulfilled' &&
-        parseInt(data.value.id, 10) > parseInt(latest ?? '0', 10)
-      ) {
-        eventBus.emit(Events.NewIBayItem, { ...data.value, location });
-      }
+    await crawler.run([...urls]).catch((err) => {
+      console.log(err);
     });
-
-    const latestItem = listingData[0];
-
-    if (latestItem.status === 'fulfilled') {
-      await ConfigService.setConfig(LATEST_CONFIG_KEY, latestItem.value.id);
-    }
-
-    await browser.close();
-  }
-
-  private async extractData(el: ElementHandle): Promise<Listing> {
-    const getSelectorProperty = async (selector: string, property: string) => {
-      try {
-        const element = await el.$(selector);
-        const propertyHandle = await element?.getProperty(property);
-        const value = await propertyHandle?.jsonValue();
-
-        return value;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const title = await getSelectorProperty('h5 > a', 'textContent');
-    const url = await getSelectorProperty('h5 > a', 'href');
-    const price = await getSelectorProperty('.col.s8 > .price', 'textContent');
-    const id = /o([0-9]+)\.html/.exec(url as string)?.[1];
-
-    return trimObjectValues({
-      id,
-      title,
-      url,
-      price,
-    }) as unknown as Listing;
   }
 }

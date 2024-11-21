@@ -4,7 +4,7 @@ export const escape = (text: string) =>
     y ? y : '\\' + x,
   );
 
-export const trimObjectValues = (obj: Record<string, string>) => {
+export const trimObjectValues = <T>(obj: T) => {
   Object.keys(obj).forEach((key) => {
     obj[key] = obj[key]?.trim();
   });
