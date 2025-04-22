@@ -12,7 +12,16 @@ export const notifyUsersByPref = async (location: string, item: Listing) => {
 
   const users = await UserService.getUsersByPref(location);
   users.forEach((user) => {
-    bot.api.sendMessage(user.tg_id, item.url);
+    bot.api.sendMessage(user.tg_id, item.url).catch((err) => {
+      // If the user has blocked the bot set is_blocked to true
+      if (
+        err &&
+        typeof err.message === 'string' &&
+        err.message.includes('Forbidden: bot was blocked by the user')
+      ) {
+        UserService.blockUser(user.tg_id);
+      }
+    });
   });
 };
 

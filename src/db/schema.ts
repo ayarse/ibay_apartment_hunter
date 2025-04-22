@@ -1,4 +1,10 @@
-import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  pgTable,
+  serial,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/pg-core';
 
 export const config = pgTable('config', {
   config_key: varchar('config_key', { length: 50 }).primaryKey(),
@@ -11,6 +17,7 @@ export const subscribers = pgTable('subscribers', {
   pref_location: varchar('pref_location', { length: 50 }).default('Male'),
   created_at: timestamp('created_at').defaultNow(),
   deleted_at: timestamp('deleted_at'),
+  is_blocked: boolean('is_blocked').default(null),
 });
 
 export type Config = typeof config.$inferSelect;

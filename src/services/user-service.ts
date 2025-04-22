@@ -1,4 +1,4 @@
-import { and, count, eq, isNull } from 'drizzle-orm';
+import { and, count, eq, isNull, or } from 'drizzle-orm';
 import { db } from '../clients';
 import { Subscriber, subscribers } from '../db/schema';
 
@@ -18,12 +18,14 @@ export const addSubscriber = async (id: string): Promise<boolean> => {
     .values({
       tg_id: id,
       deleted_at: null,
+      is_blocked: false,
     })
     .onConflictDoUpdate({
       target: subscribers.tg_id,
       set: {
         tg_id: id,
         deleted_at: null,
+        is_blocked: false,
       },
     });
 
@@ -80,7 +82,11 @@ export const getUsersByPref = async (pref: string): Promise<Subscriber[]> => {
     .select()
     .from(subscribers)
     .where(
-      and(eq(subscribers.pref_location, pref), isNull(subscribers.deleted_at)),
+      and(
+        eq(subscribers.pref_location, pref),
+        isNull(subscribers.deleted_at),
+        or(isNull(subscribers.is_blocked), eq(subscribers.is_blocked, false)),
+      ),
     );
 
   return res;
@@ -90,7 +96,26 @@ export const getAllSubscribers = async (): Promise<Subscriber[]> => {
   const res = await db
     .select()
     .from(subscribers)
-    .where(isNull(subscribers.deleted_at));
+    .where(
+      and(
+        isNull(subscribers.deleted_at),
+        or(isNull(subscribers.is_blocked), eq(subscribers.is_blocked, false)),
+      ),
+    );
 
   return res;
+};
+
+export const blockUser = async (id: string): Promise<void> => {
+  await db
+    .update(subscribers)
+    .set({ is_blocked: true })
+    .where(eq(subscribers.tg_id, id));
+};
+
+export const unblockUser = async (id: string): Promise<void> => {
+  await db
+    .update(subscribers)
+    .set({ is_blocked: false })
+    .where(eq(subscribers.tg_id, id));
 };
