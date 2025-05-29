@@ -3,6 +3,7 @@ import { ConfigService } from '../services';
 import { Listing, Locations } from '../types';
 import { trimObjectValues } from '../util';
 import { Events, eventBus } from '../util/event-bus';
+import env from '../config';
 
 const ibayBaseUrl = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';
 
@@ -54,10 +55,12 @@ export class IBayScraper {
           });
 
           // Update the configuration with the latest item ID for the current location
-          await ConfigService.setConfig(
-            `ibay_latest_item_id_${location}`,
-            listingData[0].id,
-          );
+          if (!env.DEBUG) {
+            await ConfigService.setConfig(
+              `ibay_latest_item_id_${location}`,
+              listingData[0].id,
+            );
+          }
         },
       },
       new Configuration({
