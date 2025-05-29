@@ -14,7 +14,7 @@
     "dev": "tsx watch ./src/app.ts  --inspect",
     "build": "tsc",
     "clean": "rm -r ./build",
-    "generate": "drizzle-kit generate:pg",
+    "generate": "drizzle-kit generate",
     "migrate": "env-cmd -f ./.env tsx scripts/migrate.ts",
     "push": "drizzle-kit push:pg",
     "dk:migrate": "drizzle-kit migrate"
@@ -26,7 +26,7 @@
     "@sentry/tracing": "^7.28.1",
     "crawlee": "^3.12.0",
     "dotenv": "^16.3.1",
-    "drizzle-orm": "^0.36.3",
+    "drizzle-orm": "^0.43.1",
     "env-cmd": "^10.1.0",
     "grammy": "^1.19.2",
     "grammy-inline-menu": "^8.0.1",
@@ -41,12 +41,17 @@
     "@types/node": "^20.10.4",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
-    "drizzle-kit": "^0.28.1",
+    "drizzle-kit": "^0.31.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-filenames-simple": "^0.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "2.8.1",
     "typescript": "^5.3.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
