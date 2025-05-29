@@ -56,3 +56,8 @@ http
 
 process.once('SIGINT', stopTg);
 process.once('SIGTERM', stopTg);
+
+process.on('uncaughtException', (err) => {
+  logger.error(err);
+  Sentry.captureException(err);
+});
