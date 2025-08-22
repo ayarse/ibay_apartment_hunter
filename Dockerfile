@@ -22,11 +22,8 @@ ENV NODE_OPTIONS="--dns-result-order=ipv4first"
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-# Expose port
-EXPOSE ${PORT:-3000}
-
 # Health check
-HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-3000} || exit 1
+HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
 # Start the app
 CMD ["pnpm", "start"]

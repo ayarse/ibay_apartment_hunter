@@ -44,12 +44,22 @@ tg.catch((err) => {
   Sentry.captureException(err);
 });
 
+// Simple HTTP server for health checks only
 const server = http
-  .createServer((_, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('OK');
+  .createServer((req, res) => {
+    if (req.url === '/health' || req.url === '/') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ 
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      }));
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Not Found' }));
+    }
   })
-  .listen(process.env.PORT || 3000);
+  .listen(3000);
 
 let isShuttingDown = false;
 
