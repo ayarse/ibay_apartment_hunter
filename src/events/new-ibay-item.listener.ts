@@ -1,5 +1,5 @@
-import { NotifService } from '../services';
-import { Listing } from '../util/types';
+import { NotifService } from '@/services';
+import { Listing } from '@/util/types';
 
 export const newIbayItemScraped = async (item: Listing) => {
   console.log(item);

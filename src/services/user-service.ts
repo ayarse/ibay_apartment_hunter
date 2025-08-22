@@ -1,7 +1,7 @@
 import { and, count, eq, isNull, or } from 'drizzle-orm';
-import { db } from '../db';
-import type { Subscriber } from '../db/schema';
-import { subscribers } from '../db/schema';
+import { db } from '@/db';
+import type { Subscriber } from '@/db/schema';
+import { subscribers } from '@/db/schema';
 
 export const hasSubscriber = async (id: string): Promise<boolean> => {
   const res = await db

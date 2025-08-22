@@ -1,7 +1,7 @@
 import type { Context } from 'grammy';
-import { bot } from '../telegram';
-import { env } from '../config';
-import { UserService } from '../services';
+import { bot } from '@/telegram';
+import { env } from '@/config';
+import { UserService } from '@/services';
 import { menuMiddleware } from './menu';
 
 export default async function initCommands() {

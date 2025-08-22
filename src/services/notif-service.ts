@@ -1,7 +1,7 @@
 import { UserService } from '.';
-import { bot } from '../telegram';
-import { env } from '../config';
-import { Listing } from '../util/types';
+import { bot } from '@/telegram';
+import { env } from '@/config';
+import { Listing } from '@/util/types';
 
 export const notifyUsersByPref = async (location: string, item: Listing) => {
   if (env.DEBUG) {

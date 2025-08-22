@@ -1,7 +1,7 @@
 import type { Context } from 'grammy';
 import { MenuMiddleware, MenuTemplate } from 'grammy-inline-menu';
-import { UserService } from '../services';
-import { Locations } from '../util/types';
+import { UserService } from '@/services';
+import { Locations } from '@/util/types';
 
 const menuTemplate = new MenuTemplate<Context>(
   (_ctx) => `Select your preferred location`,

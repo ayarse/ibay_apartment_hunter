@@ -8,6 +8,9 @@
     "outDir": "./build",
     "strict": false,
     "moduleResolution": "Bundler",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

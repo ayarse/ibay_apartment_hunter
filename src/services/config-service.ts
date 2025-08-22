@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../db';
-import { config } from '../db/schema';
+import { db } from '@/db';
+import { config } from '@/db/schema';
 
 export const getConfigByKey = async (
   key: string,
