@@ -19,5 +19,3 @@ export const env = parseEnv(process.env, {
   POSTGRES_DB: z.string().optional(),
   POSTGRES_PORT: z.string().optional(),
 });
-
-export default env;
