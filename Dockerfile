@@ -46,4 +46,4 @@ EXPOSE ${PORT}
 HEALTHCHECK CMD curl --fail http://0.0.0.0:${PORT} || exit 1
 
 # Run the app using tsx
-CMD ["npx", "tsx", "./src/app.ts"]
+CMD ["npx", "tsx", "./src/index.ts"]

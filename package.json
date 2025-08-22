@@ -9,9 +9,8 @@
     "url": "https://github.com/ayarse/ibay_apartment_hunter/issues"
   },
   "scripts": {
-    "start": "tsx ./src/app.ts",
-    "start:node": "node build/app.js",
-    "dev": "tsx watch ./src/app.ts  --inspect",
+    "start": "tsx ./src/index.ts",
+    "dev": "tsx watch ./src/index.ts  --inspect",
     "build": "tsc",
     "clean": "rm -r ./build",
     "generate": "drizzle-kit generate",
