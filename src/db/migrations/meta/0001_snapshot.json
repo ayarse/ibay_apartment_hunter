@@ -70,9 +70,7 @@
         "subscribers_tg_id_unique": {
           "name": "subscribers_tg_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "tg_id"
-          ]
+          "columns": ["tg_id"]
         }
       }
     }
