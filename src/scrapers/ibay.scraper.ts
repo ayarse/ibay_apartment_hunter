@@ -1,60 +1,58 @@
-import { CheerioCrawler, Configuration} from 'crawlee';
-import { ConfigService } from '@/services';
-import type { Listing } from '@/util/types';
-import { Events, Locations } from '@/util/types';
-import { trimObjectValues } from '@/util';
-import { eventBus } from '@/events';
-import { env } from '@/config';
+import { CheerioCrawler, Configuration } from "crawlee";
+import { ConfigService } from "@/services";
+import type { Listing } from "@/util/types";
+import { Events, Locations } from "@/util/types";
+import { trimObjectValues } from "@/util";
+import { eventBus } from "@/events";
+import { env } from "@/config";
 import minifyHtml from "@minify-html/node";
 
-const BASE_URL = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';
+const BASE_URL = process.env.IBAY_BASE_URL ?? "https://ibay.com.mv";
 
 const SELECTORS = {
-  page: 'div#iw-mid-container.container.main-container > div.row',
-  listings: '.bg-light.latest-list-item',
-  title: 'h5 > a',
-  url: 'h5 > a',
-  price: '.col.s8 > .price',
+  page: "div#iw-mid-container.container.main-container > div.row",
+  listings: ".bg-light.latest-list-item",
+  title: "h5 > a",
+  url: "h5 > a",
+  price: ".col.s8 > .price",
   id: (data: string) => {
     const match = /o([0-9]+)\.html/.exec(data);
     return match?.[1];
   },
 } as const;
 
-
 const getConfigKey = (location: string) => `ibay_latest_item_id_${location}`;
 
 const buildLocationUrl = (location: keyof typeof Locations) => {
   const url = new URL(BASE_URL);
-  url.searchParams.set('page', 'search');
-  url.searchParams.set('s_res', 'AND');
-  url.searchParams.set('cid', '25');
-  url.searchParams.set('off', '0');
-  url.searchParams.set('lang', '');
-  url.searchParams.set('s_by', 'hw_added');
- 
-   switch (location) {
-     case Locations.Male:
-       url.searchParams.set('reg1_ex', '11');
-       url.searchParams.set('reg2_ex', '100');
-       break;
-     case Locations.Hulhumale:
-       url.searchParams.set('f_location_ex', 'Male -- HulhuMale');
-       break;
-     case Locations.Villigili:
-       url.searchParams.set('f_location_ex', 'Male -- Villingili');
-       break;
-     default:
-       break;
-   }
-   return url.toString();
- }
+  url.searchParams.set("page", "search");
+  url.searchParams.set("s_res", "AND");
+  url.searchParams.set("cid", "25");
+  url.searchParams.set("off", "0");
+  url.searchParams.set("lang", "");
+  url.searchParams.set("s_by", "hw_added");
 
- const LOCATION_URLS = Object.values(Locations).reduce((acc, location) => {
+  switch (location) {
+    case Locations.Male:
+      url.searchParams.set("reg1_ex", "11");
+      url.searchParams.set("reg2_ex", "100");
+      break;
+    case Locations.Hulhumale:
+      url.searchParams.set("f_location_ex", "Male -- HulhuMale");
+      break;
+    case Locations.Villigili:
+      url.searchParams.set("f_location_ex", "Male -- Villingili");
+      break;
+    default:
+      break;
+  }
+  return url.toString();
+};
+
+const LOCATION_URLS = Object.values(Locations).reduce((acc, location) => {
   acc[location] = buildLocationUrl(location);
   return acc;
- }, {} as Record<keyof typeof Locations, string>);
-
+}, {} as Record<keyof typeof Locations, string>);
 
 export class IBayScraper {
   public async getUpdates() {
@@ -67,23 +65,24 @@ export class IBayScraper {
           const listingData: Listing[] = [];
           const currentUrl = request.url;
           const location = Object.keys(LOCATION_URLS).find(
-            (key) => LOCATION_URLS[key] === currentUrl,
+            (key) => LOCATION_URLS[key] === currentUrl
           );
           const configKey = getConfigKey(location);
-          const currentLatest = await ConfigService.getConfigByKey(configKey) ?? '0';
+          const currentLatest =
+            (await ConfigService.getConfigByKey(configKey)) ?? "0";
 
-          console.log('Current location', location);
+          console.log("Current location", location);
 
           listings.each((_index, el) => {
             const title = $(el).find(SELECTORS.title).text();
-            const url = $(el).find(SELECTORS.url).attr('href');
+            const url = $(el).find(SELECTORS.url).attr("href");
             const price = $(el).find(SELECTORS.price).text();
             const id = SELECTORS.id(url);
 
             const data = trimObjectValues({
               id,
               title,
-              url: new URL(url, 'https://ibay.com.mv').toString(),
+              url: new URL(url, "https://ibay.com.mv").toString(),
               price,
               location,
             });
@@ -100,14 +99,14 @@ export class IBayScraper {
           if (!env.DEBUG) {
             await ConfigService.setConfig(
               getConfigKey(location),
-              listingData[0].id,
+              listingData[0].id
             );
           }
         },
       },
       new Configuration({
         persistStorage: false,
-      }),
+      })
     );
 
     await crawler.run([...urls]).catch((err) => {
@@ -116,15 +115,25 @@ export class IBayScraper {
   }
 }
 
-export const ibayPageCrawler = new CheerioCrawler({
-  keepAlive: true,
-  async requestHandler({ request, $ }) {
-    const html = minifyHtml.minify(Buffer.from($(SELECTORS.page).html() ?? ''), {}).toString('utf-8');
-    eventBus.emit(Events.IbayPageCrawler, {
-      ibay_id: SELECTORS.id(request.url),
-      html,
-    });
+export const ibayPageCrawler = new CheerioCrawler(
+  {
+    keepAlive: true,
+    async requestHandler({ request, $ }) {
+      $('.details-sharing-options, .iw-300x250-d-ad, .iw-300x600-d-ad, script, style, div.clearfix.clear-columns').remove();
+
+      let cleanedHtml = $(SELECTORS.page).html();
+
+      const minifiedHtml = minifyHtml
+        .minify(Buffer.from(cleanedHtml), {})
+        .toString("utf-8");
+        
+      eventBus.emit(Events.IbayPageCrawler, {
+        ibay_id: SELECTORS.id(request.url),
+        html: minifiedHtml,
+      });
+    },
   },
-}, new Configuration({
-  persistStorage: false,
-}));
+  new Configuration({
+    persistStorage: false,
+  })
+);
