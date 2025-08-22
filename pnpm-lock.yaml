@@ -35,6 +35,9 @@ importers:
       pino:
         specifier: ^9.9.0
         version: 9.9.0
+      pino-pretty:
+        specifier: ^13.1.1
+        version: 13.1.1
       znv:
         specifier: ^0.5.0
         version: 0.5.0(zod@3.25.76)
@@ -54,9 +57,6 @@ importers:
       drizzle-kit:
         specifier: ^0.31.4
         version: 0.31.4
-      pino-pretty:
-        specifier: ^13.1.1
-        version: 13.1.1
       tsx:
         specifier: ^4.20.4
         version: 4.20.4

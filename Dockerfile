@@ -1,50 +1,32 @@
-# Use Node.js Alpine as base
-FROM node:20-alpine AS base
+FROM node:20-alpine
+
 WORKDIR /usr/src/app
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@8.9.0 --activate
+# Enable pnpm 10.x
+RUN corepack enable && corepack prepare pnpm@10 --activate
 
-# Install dependencies into temp directory
-FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json pnpm-lock.yaml /temp/dev/
-RUN cd /temp/dev && pnpm install --frozen-lockfile
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
 
-# Install production dependencies
-RUN mkdir -p /temp/prod
-COPY package.json pnpm-lock.yaml /temp/prod/
-RUN cd /temp/prod && pnpm install --frozen-lockfile --prod
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
-# Copy node_modules from temp directory and project files
-FROM base AS prerelease
-COPY --from=install /temp/dev/node_modules node_modules
+# Copy source code
 COPY . .
 
-# Setup production image
-FROM base AS release
-COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/app/src ./src
-COPY --from=prerelease /usr/src/app/package.json .
-COPY --from=prerelease /usr/src/app/pnpm-lock.yaml .
-COPY --from=prerelease /usr/src/app/tsconfig.json .
-
-# Set production environment and DNS options
+# Set production environment
 ENV NODE_ENV=production
 ENV NODE_OPTIONS="--dns-result-order=ipv4first"
-
-# Install curl for healthcheck
-RUN apk add --no-cache curl
 
 # Create non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-# Expose the port (default 3000, but can be overridden)
+# Expose port
 EXPOSE ${PORT:-3000}
 
-# Add healthcheck
-HEALTHCHECK CMD curl --fail http://0.0.0.0:${PORT:-3000} || exit 1
+# Health check
+HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-3000} || exit 1
 
-# Run the app using tsx
-CMD ["npx", "tsx", "./src/index.ts"]
+# Start the app
+CMD ["pnpm", "start"]
