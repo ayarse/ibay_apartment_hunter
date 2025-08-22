@@ -6,8 +6,9 @@ CREATE TABLE IF NOT EXISTS "config" (
 CREATE TABLE IF NOT EXISTS "subscribers" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"tg_id" varchar(255),
-	"pref_location" varchar(50) DEFAULT 'male',
+	"pref_location" varchar(50) DEFAULT 'Male',
 	"created_at" timestamp DEFAULT now(),
 	"deleted_at" timestamp,
+	"is_blocked" boolean DEFAULT null,
 	CONSTRAINT "subscribers_tg_id_unique" UNIQUE("tg_id")
 );

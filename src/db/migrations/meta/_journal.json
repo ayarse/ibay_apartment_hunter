@@ -1,19 +1,12 @@
 {
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1702233221457,
-      "tag": "0000_good_korg",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1702331662761,
-      "tag": "0001_curvy_nick_fury",
+      "version": "7",
+      "when": 1755873446801,
+      "tag": "0000_daffy_dragon_lord",
       "breakpoints": true
     }
   ]

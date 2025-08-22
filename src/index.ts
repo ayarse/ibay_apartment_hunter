@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/node';
 import { bot as tg } from './telegram';
 import { env } from './config';
 import { logger } from './util';
-import { client } from './db';
+import {  db } from './db';
 
 import './events';
 import { IBayScraper } from './scrapers/ibay';
@@ -79,7 +79,7 @@ const shutdown = async (signal: string) => {
     });
 
     logger.info('Closing database connection...');
-    await client.end();
+    await db.$client.end();
 
     logger.info('Graceful shutdown completed');
     process.exit(0);

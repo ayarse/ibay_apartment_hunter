@@ -1,10 +1,10 @@
 {
-  "id": "12efff99-ac67-4090-a208-f4aca818d3a1",
+  "id": "76bd2b74-a364-45a2-8ef7-39ffad227609",
   "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "config": {
+    "public.config": {
       "name": "config",
       "schema": "",
       "columns": {
@@ -24,9 +24,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "subscribers": {
+    "public.subscribers": {
       "name": "subscribers",
       "schema": "",
       "columns": {
@@ -47,7 +50,7 @@
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false,
-          "default": "'male'"
+          "default": "'Male'"
         },
         "created_at": {
           "name": "created_at",
@@ -61,6 +64,13 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
+        },
+        "is_blocked": {
+          "name": "is_blocked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": null
         }
       },
       "indexes": {},
@@ -70,16 +80,25 @@
         "subscribers_tg_id_unique": {
           "name": "subscribers_tg_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["tg_id"]
+          "columns": [
+            "tg_id"
+          ]
         }
-      }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {},
   "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   }
 }

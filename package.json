@@ -13,10 +13,9 @@
     "dev": "tsx watch ./src/index.ts  --inspect",
     "build": "tsc",
     "clean": "rm -r ./build",
-    "generate": "drizzle-kit generate",
-    "migrate": "env-cmd -f ./.env tsx scripts/migrate.ts",
-    "push": "drizzle-kit push:pg",
-    "dk:migrate": "drizzle-kit migrate",
+    "drizzle:push": "drizzle-kit push",
+    "drizzle:generate": "drizzle-kit generate",
+    "drizzle:migrate": "drizzle-kit migrate",
     "lint": "biome format --write"
   },
   "author": "ayarse",
