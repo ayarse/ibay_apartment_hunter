@@ -27,6 +27,7 @@ COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/src ./src
 COPY --from=prerelease /usr/src/app/package.json .
 COPY --from=prerelease /usr/src/app/pnpm-lock.yaml .
+COPY --from=prerelease /usr/src/app/tsconfig.json .
 
 # Set production environment and DNS options
 ENV NODE_ENV=production
@@ -39,11 +40,11 @@ RUN apk add --no-cache curl
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-# Expose the port
-EXPOSE ${PORT}
+# Expose the port (default 3000, but can be overridden)
+EXPOSE ${PORT:-3000}
 
 # Add healthcheck
-HEALTHCHECK CMD curl --fail http://0.0.0.0:${PORT} || exit 1
+HEALTHCHECK CMD curl --fail http://0.0.0.0:${PORT:-3000} || exit 1
 
 # Run the app using tsx
 CMD ["npx", "tsx", "./src/index.ts"]
