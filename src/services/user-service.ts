@@ -1,5 +1,5 @@
 import { and, count, eq, isNull, or } from 'drizzle-orm';
-import { db } from '../clients';
+import { db } from '../db';
 import type { Subscriber } from '../db/schema';
 import { subscribers } from '../db/schema';
 

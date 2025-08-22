@@ -1,5 +1,5 @@
 import { UserService } from '.';
-import { bot } from '../clients';
+import { bot } from '../telegram';
 import { env } from '../config';
 import { Listing } from '../types';
 
