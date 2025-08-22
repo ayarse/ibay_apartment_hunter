@@ -1,14 +1,16 @@
-import { CheerioCrawler, Configuration, CheerioRoot} from 'crawlee';
+import { CheerioCrawler, Configuration} from 'crawlee';
 import { ConfigService } from '@/services';
 import type { Listing } from '@/util/types';
 import { Events, Locations } from '@/util/types';
 import { trimObjectValues } from '@/util';
 import { eventBus } from '@/events';
 import { env } from '@/config';
+import minifyHtml from "@minify-html/node";
 
 const BASE_URL = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';
 
 const SELECTORS = {
+  page: 'div#iw-mid-container.container.main-container > div.row',
   listings: '.bg-light.latest-list-item',
   title: 'h5 > a',
   url: 'h5 > a',
@@ -113,3 +115,16 @@ export class IBayScraper {
     });
   }
 }
+
+export const ibayPageCrawler = new CheerioCrawler({
+  keepAlive: true,
+  async requestHandler({ request, $ }) {
+    const html = minifyHtml.minify(Buffer.from($(SELECTORS.page).html() ?? ''), {}).toString('utf-8');
+    eventBus.emit(Events.IbayPageCrawler, {
+      ibay_id: SELECTORS.id(request.url),
+      html,
+    });
+  },
+}, new Configuration({
+  persistStorage: false,
+}));

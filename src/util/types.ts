@@ -7,6 +7,7 @@ export const Locations = {
 
 export const Events = {
   NewIBayItem: 'new-ibay-item',
+  IbayPageCrawler: 'ibay-page-crawler',
 } as const;
 
 export interface Listing {
@@ -15,4 +16,5 @@ export interface Listing {
   url: string;
   price?: string | undefined;
   location?: string | undefined;
+  rawHtml?: string;
 }

@@ -6,7 +6,7 @@ import { logger } from './util';
 import {  db } from './db';
 
 import './events';
-import { IBayScraper } from './scrapers';
+import { ibayPageCrawler, IBayScraper } from './scrapers';
 import { notifyAdmin } from './services/notif-service';
 import initCommands from './telegram/commands';
 import { minsToMs } from './util';
@@ -29,6 +29,7 @@ await initCommands();
 tg.start();
 
 const ibayScraper = new IBayScraper();
+ibayPageCrawler.run().catch(console.error);
 
 const scraperFns = [() => ibayScraper.getUpdates()];
 

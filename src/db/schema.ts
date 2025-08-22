@@ -4,6 +4,8 @@ import {
   serial,
   timestamp,
   varchar,
+  integer,
+  text,
 } from 'drizzle-orm/pg-core';
 
 export const config = pgTable('config', {
@@ -18,6 +20,17 @@ export const subscribers = pgTable('subscribers', {
   created_at: timestamp('created_at').defaultNow(),
   deleted_at: timestamp('deleted_at'),
   is_blocked: boolean('is_blocked').default(null),
+});
+
+export const listings = pgTable('listings', {
+  id: serial('id').primaryKey(),
+  ibay_id: integer('ibay_id'),
+  title: varchar('title', { length: 255 }),
+  url: varchar('url', { length: 255 }),
+  price: varchar('price', { length: 255 }),
+  location: varchar('location', { length: 255 }),
+  raw_data: text('raw_data'),
+  created_at: timestamp('created_at').defaultNow(),
 });
 
 export type Config = typeof config.$inferSelect;
