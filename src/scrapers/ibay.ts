@@ -1,9 +1,9 @@
 import { CheerioCrawler, Configuration } from 'crawlee';
 import { ConfigService } from '../services';
-import type { Listing } from '../types';
-import { Locations } from '../types';
+import type { Listing } from '../util/types';
+import { Events, Locations } from '../util/types';
 import { trimObjectValues } from '../util';
-import { Events, eventBus } from '../util/event-bus';
+import { eventBus } from '../events';
 import { env } from '../config';
 
 const ibayBaseUrl = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';

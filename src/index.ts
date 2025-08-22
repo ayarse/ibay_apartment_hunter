@@ -2,10 +2,10 @@ import http from 'node:http';
 import * as Sentry from '@sentry/node';
 import { bot as tg } from './telegram';
 import { env } from './config';
-import { logger } from './util/logger';
+import { logger } from './util';
 import { client } from './db';
 
-import './listeners';
+import './events';
 import { IBayScraper } from './scrapers/ibay';
 import { notifyAdmin } from './services/notif-service';
 import initCommands from './telegram/commands';
