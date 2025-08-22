@@ -8,8 +8,8 @@ const menuTemplate = new MenuTemplate<Context>(
 );
 menuTemplate.select(
   'location',
-  [Locations.All, Locations.Male, Locations.Hulhumale, Locations.Villigili],
   {
+    choices: [Locations.All, Locations.Male, Locations.Hulhumale, Locations.Villigili],
     columns: 2,
     set: async (ctx, key) => {
       await UserService.addSubscriber(ctx.chat.id.toString());
