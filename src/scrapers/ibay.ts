@@ -1,9 +1,10 @@
 import { CheerioCrawler, Configuration } from 'crawlee';
 import { ConfigService } from '../services';
-import { Listing, Locations } from '../types';
+import type { Listing } from '../types';
+import { Locations } from '../types';
 import { trimObjectValues } from '../util';
 import { Events, eventBus } from '../util/event-bus';
-import env from '../config';
+import { env } from '../config';
 
 const ibayBaseUrl = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';
 
@@ -32,7 +33,7 @@ export class IBayScraper {
 
           console.log('Current location', location);
 
-          listings.each((index, el) => {
+          listings.each((_index, el) => {
             const title = $(el).find('h5 > a').text();
             const url = $(el).find('h5 > a').attr('href');
             const price = $(el).find('.col.s8 > .price').text();

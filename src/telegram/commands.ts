@@ -1,6 +1,6 @@
 import type { Context } from 'grammy';
 import { bot } from '../clients';
-import env from '../config';
+import { env } from '../config';
 import { UserService } from '../services';
 import { menuMiddleware } from './menu';
 
