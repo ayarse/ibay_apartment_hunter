@@ -1,8 +1,6 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import { parseEnv } from 'znv';
 import { z } from 'zod';
-
-dotenv.config();
 
 export const env = parseEnv(process.env, {
   DEBUG: z.boolean().default(true),
