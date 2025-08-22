@@ -1,1 +1,1 @@
-export * from './ibay';
+export * from './ibay.scraper';
