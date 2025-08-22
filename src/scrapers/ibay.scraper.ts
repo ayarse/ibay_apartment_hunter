@@ -8,13 +8,6 @@ import { env } from '@/config';
 
 const BASE_URL = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';
 
-const LOCATION_URLS = {
-  [Locations.All]: `${BASE_URL}/index.php?page=search&s_res=AND&cid=25&off=0&lang=&s_by=hw_added`,
-  [Locations.Male]: `${BASE_URL}/index.php?page=search&s_res=AND&cid=25&off=0&lang=&s_by=hw_added&reg1_ex=11&reg2_ex=100`,
-  [Locations.Hulhumale]: `${BASE_URL}/index.php?page=search&s_res=AND&cid=25&s_by=hw_added&f_location_ex=Male+--+HulhuMale`,
-  [Locations.Villigili]: `${BASE_URL}/index.php?page=search&s_res=AND&cid=25&s_by=hw_added&f_location_ex=Male+--+Villingili`,
-} as const;
-
 const SELECTORS = {
   listings: '.bg-light.latest-list-item',
   title: 'h5 > a',
@@ -25,6 +18,41 @@ const SELECTORS = {
     return match?.[1];
   },
 } as const;
+
+
+const getConfigKey = (location: string) => `ibay_latest_item_id_${location}`;
+
+const buildLocationUrl = (location: keyof typeof Locations) => {
+  const url = new URL(BASE_URL);
+  url.searchParams.set('page', 'search');
+  url.searchParams.set('s_res', 'AND');
+  url.searchParams.set('cid', '25');
+  url.searchParams.set('off', '0');
+  url.searchParams.set('lang', '');
+  url.searchParams.set('s_by', 'hw_added');
+ 
+   switch (location) {
+     case Locations.Male:
+       url.searchParams.set('reg1_ex', '11');
+       url.searchParams.set('reg2_ex', '100');
+       break;
+     case Locations.Hulhumale:
+       url.searchParams.set('f_location_ex', 'Male -- HulhuMale');
+       break;
+     case Locations.Villigili:
+       url.searchParams.set('f_location_ex', 'Male -- Villingili');
+       break;
+     default:
+       break;
+   }
+   return url.toString();
+ }
+
+ const LOCATION_URLS = Object.values(Locations).reduce((acc, location) => {
+  acc[location] = buildLocationUrl(location);
+  return acc;
+ }, {} as Record<keyof typeof Locations, string>);
+
 
 export class IBayScraper {
   public async getUpdates() {
@@ -39,8 +67,8 @@ export class IBayScraper {
           const location = Object.keys(LOCATION_URLS).find(
             (key) => LOCATION_URLS[key] === currentUrl,
           );
-          const configKey = `ibay_latest_item_id_${location}`;
-          const currentLatest = await ConfigService.getConfigByKey(configKey);
+          const configKey = getConfigKey(location);
+          const currentLatest = await ConfigService.getConfigByKey(configKey) ?? '0';
 
           console.log('Current location', location);
 
@@ -69,7 +97,7 @@ export class IBayScraper {
           // Update the configuration with the latest item ID for the current location
           if (!env.DEBUG) {
             await ConfigService.setConfig(
-              `ibay_latest_item_id_${location}`,
+              getConfigKey(location),
               listingData[0].id,
             );
           }

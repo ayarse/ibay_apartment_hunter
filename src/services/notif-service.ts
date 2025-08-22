@@ -3,9 +3,13 @@ import { bot } from '@/telegram';
 import { env } from '@/config';
 import { Listing } from '@/util/types';
 
+export const notifyAdmin = (message: string) => {
+  bot.api.sendMessage(env.DEBUG_USER, message);
+};
+
 export const notifyUsersByPref = async (location: string, item: Listing) => {
   if (env.DEBUG) {
-    bot.api.sendMessage(env.DEBUG_USER, item.url);
+    notifyAdmin(item.url);
 
     return;
   }
@@ -25,6 +29,3 @@ export const notifyUsersByPref = async (location: string, item: Listing) => {
   });
 };
 
-export const notifyAdmin = (message: string) => {
-  bot.api.sendMessage(env.DEBUG_USER, message);
-};
