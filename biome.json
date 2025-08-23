@@ -17,7 +17,12 @@
   },
   "linter": {
     "enabled": true,
-    "rules": { "recommended": true, "noNonNullAssertion": "off" }
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExtraNonNullAssertion": "off"
+      }
+    }
   },
   "javascript": {
     "formatter": {
