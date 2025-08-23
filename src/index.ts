@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/node';
 import { bot as tg } from './telegram';
 import { env } from './config';
 import { logger } from './util';
-import {  db } from './db';
+import { db } from './db';
 
 import './events';
 import { ibayPageCrawler, IBayScraper } from './scrapers';
@@ -50,11 +50,13 @@ const server = http
   .createServer((req, res) => {
     if (req.url === '/health' || req.url === '/') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ 
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()
-      }));
+      res.end(
+        JSON.stringify({
+          status: 'healthy',
+          timestamp: new Date().toISOString(),
+          uptime: process.uptime(),
+        }),
+      );
     } else {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Not Found' }));

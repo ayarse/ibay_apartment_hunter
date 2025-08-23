@@ -28,4 +28,3 @@ export const notifyUsersByPref = async (location: string, item: Listing) => {
     });
   });
 };
-

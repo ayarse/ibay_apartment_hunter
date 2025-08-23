@@ -28,7 +28,7 @@ export class QueuedEventEmitter extends EventEmitter {
 
     this.queue.push(queuedEvent);
     this.processQueue();
-    
+
     return this.listenerCount(event) > 0;
   }
 
@@ -72,7 +72,7 @@ export class QueuedEventEmitter extends EventEmitter {
 
     while (this.queue.length > 0) {
       const queuedEvent = this.queue.shift()!;
-      
+
       // Emit the event using the parent EventEmitter's emit method
       super.emit(queuedEvent.event, ...queuedEvent.args);
 
@@ -89,6 +89,6 @@ export class QueuedEventEmitter extends EventEmitter {
    * Sleep for the specified number of milliseconds
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
