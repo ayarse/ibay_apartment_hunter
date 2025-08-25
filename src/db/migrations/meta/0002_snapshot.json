@@ -90,9 +90,7 @@
         "listings_ibay_id_unique": {
           "name": "listings_ibay_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "ibay_id"
-          ]
+          "columns": ["ibay_id"]
         }
       },
       "policies": {},
@@ -150,9 +148,7 @@
         "subscribers_tg_id_unique": {
           "name": "subscribers_tg_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "tg_id"
-          ]
+          "columns": ["tg_id"]
         }
       },
       "policies": {},
