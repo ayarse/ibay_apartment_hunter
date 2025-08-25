@@ -54,7 +54,7 @@ export default async function initCommands() {
   );
 
   /**
-   * [ /usercount ] - Displays the number of subscribed users.
+   * [ /usercount ] - Displays detailed user statistics including total, active, blocked, and location breakdown.
    * Response is sent only if the command comes from the DEBUG_USER's id.
    */
   bot.command('usercount', async (ctx) => {
@@ -64,8 +64,31 @@ export default async function initCommands() {
       return;
     }
 
-    const count = await UserService.countUsers();
-    ctx.reply(`${count}`);
+    const stats = await UserService.getUserStats();
+
+    // Build location breakdown
+    let locationBreakdown = '';
+    stats.byLocation.forEach(({ location, count }) => {
+      locationBreakdown += `  📍 ${location}: ${count}\n`;
+    });
+
+    const message = `
+📊 *User Statistics Summary*
+
+👥 *Total Users:* ${stats.total}
+✅ *Active Users:* ${stats.active}
+🚫 *Blocked Users:* ${stats.blocked}
+🗑️ *Deleted Users:* ${stats.deleted}
+
+📍 *Active Users by Location:*
+${locationBreakdown || '  No location data available'}
+
+📈 *System Health:*
+  • Active Rate: ${stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}%
+  • Block Rate: ${stats.total > 0 ? Math.round((stats.blocked / stats.total) * 100) : 0}%
+    `;
+
+    ctx.reply(message, { parse_mode: 'Markdown' });
   });
 
   /**
