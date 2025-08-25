@@ -24,7 +24,7 @@ export const subscribers = pgTable('subscribers', {
 
 export const listings = pgTable('listings', {
   id: serial('id').primaryKey(),
-  ibay_id: integer('ibay_id'),
+  ibay_id: integer('ibay_id').unique(),
   title: varchar('title', { length: 255 }),
   url: varchar('url', { length: 255 }),
   price: varchar('price', { length: 255 }),

@@ -1,0 +1,1 @@
+ALTER TABLE "listings" ADD CONSTRAINT "listings_ibay_id_unique" UNIQUE("ibay_id");

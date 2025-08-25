@@ -7,13 +7,16 @@ import { Listing } from '@/util/types';
 export const newIbayItemScraped = async (item: Listing) => {
   NotifService.notifyUsersByPref(item.location, item);
 
-  await db.insert(listings).values({
-    ibay_id: parseInt(item.id, 10),
-    title: item.title,
-    url: item.url,
-    price: item.price,
-    location: item.location,
-  });
+  await db
+    .insert(listings)
+    .values({
+      ibay_id: parseInt(item.id, 10),
+      title: item.title,
+      url: item.url,
+      price: item.price,
+      location: item.location,
+    })
+    .onConflictDoNothing();
 
   await ibayPageCrawler.addRequests([item.url]);
 };
