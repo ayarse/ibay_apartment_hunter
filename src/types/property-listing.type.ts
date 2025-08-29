@@ -13,10 +13,9 @@ const PropertyRentalListingSchema = z.object({
 
   available_from: z
     .string()
-    .date()
     .nullable()
     .optional()
-    .describe('Date when property becomes available'),
+    .describe('Date when property becomes available for renting or lease'),
 
   location: z
     .enum(['Male', 'Villigili', 'Hulhumale', 'other'])
@@ -88,7 +87,9 @@ const PropertyRentalListingSchema = z.object({
     .number()
     .nullable()
     .optional()
-    .describe('Size of the property in square feet/meters (if available)'),
+    .describe(
+      'Size of the property in square feet (if available). If not explicitly mentioned in square feet, return null.',
+    ),
 
   furnished_status: z
     .enum(['furnished', 'unfurnished', 'semi-furnished', 'unknown'])
@@ -114,7 +115,9 @@ const PropertyRentalListingSchema = z.object({
     .string()
     .date()
     .nullable()
-    .describe('Date when the listing was created'),
+    .describe(
+      'Date when the listing was created. This is in the HTML as "Last Updated". Get in YYYY-MM-DD format. If not available, return null.',
+    ),
 
   listing_user: z
     .string()

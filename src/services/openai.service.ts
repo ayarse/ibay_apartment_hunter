@@ -21,7 +21,7 @@ export async function convertHtmlToJson(html: string) {
       {
         role: 'system',
         content:
-          'Parse the given HTML into the given JSON Schema. Return the JSON object only, no other text.',
+          'Parse the given HTML into the given JSON Schema. Return the JSON object only, no other text. Get dates in YYYY-MM-DD format.',
       },
       {
         role: 'user',
