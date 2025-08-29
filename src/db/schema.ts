@@ -1,11 +1,12 @@
 import {
   boolean,
+  integer,
+  jsonb,
   pgTable,
   serial,
+  text,
   timestamp,
   varchar,
-  integer,
-  text,
 } from 'drizzle-orm/pg-core';
 
 export const config = pgTable('config', {
@@ -30,6 +31,7 @@ export const listings = pgTable('listings', {
   price: varchar('price', { length: 255 }),
   location: varchar('location', { length: 255 }),
   raw_data: text('raw_data'),
+  parsed_data: jsonb('parsed_data'),
   created_at: timestamp('created_at').defaultNow(),
 });
 

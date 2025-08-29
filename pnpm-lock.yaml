@@ -32,6 +32,9 @@ importers:
       grammy-inline-menu:
         specifier: ^9.2.0
         version: 9.2.0(grammy@1.38.1)
+      openai:
+        specifier: ^5.16.0
+        version: 5.16.0(ws@8.18.1)(zod@3.25.76)
       pg:
         specifier: ^8.16.3
         version: 8.16.3
@@ -1699,6 +1702,18 @@ packages:
   onetime@5.1.2:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
+
+  openai@5.16.0:
+    resolution: {integrity: sha512-hoEH8ZNvg1HXjU9mp88L/ZH8O082Z8r6FHCXGiWAzVRrEv443aI57qhch4snu07yQydj+AUAWLenAiBXhu89Tw==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
 
   ora@5.4.1:
     resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
@@ -3945,6 +3960,11 @@ snapshots:
   onetime@5.1.2:
     dependencies:
       mimic-fn: 2.1.0
+
+  openai@5.16.0(ws@8.18.1)(zod@3.25.76):
+    optionalDependencies:
+      ws: 8.18.1
+      zod: 3.25.76
 
   ora@5.4.1:
     dependencies:

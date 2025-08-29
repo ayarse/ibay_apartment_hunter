@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Property Rental Listing",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the property listing"
+    },
+    "property_type": {
+      "type": "string",
+      "description": "Type of property being rented",
+      "enum": ["apartment", "house", "godown", "land", "other"],
+      "default": "apartment"
+    },
+    "available_from": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Date when property becomes available"
+    },
+    "location": {
+      "type": ["string", "null"],
+      "description": "Island/location of the property",
+      "enum": ["Male", "Villigili", "Hulhumale", "other"]
+    },
+    "neighborhood": {
+      "type": ["string", "null"],
+      "description": "Neighborhood of the property",
+      "enum": [
+        "Maafannu",
+        "Mahchangoalhi",
+        "Galolhu",
+        "Henveiru",
+        "Villigili",
+        "Hulhumale Phase 1",
+        "Hulhumale Phase 2",
+        "Unknown"
+      ]
+    },
+    "floor": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Floor number of the property"
+    },
+    "bedrooms": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of bedrooms"
+    },
+    "bathrooms": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of bathrooms"
+    },
+    "rental_price": {
+      "type": ["number", "null"],
+      "description": "Rental price of the property"
+    },
+    "rental_price_currency": {
+      "type": ["string", "null"],
+      "description": "Currency of the rental price (ISO 4217 preferred, e.g., MVR, USD)"
+    },
+    "deposit": {
+      "type": ["string", "null"],
+      "description": "Deposit or advance amount being asked for the property (raw text to capture different formats)"
+    },
+    "size": {
+      "type": ["number", "null"],
+      "description": "Size of the property in square feet/meters (if available)"
+    },
+    "furnished_status": {
+      "type": ["string", "null"],
+      "enum": ["furnished", "unfurnished", "semi-furnished", "unknown"],
+      "description": "Furnishing status of the property"
+    },
+    "amenities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of amenities (e.g., lift, wifi, parking)"
+    },
+    "other_details": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Other details mentioned (e.g., tenant preference, bills included)"
+    },
+    "listing_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Date when the listing was created"
+    },
+    "listing_user": {
+      "type": ["string", "null"],
+      "description": "Name of the user who created the listing"
+    },
+    "listing_contact": {
+      "type": ["string", "null"],
+      "description": "Contact phone number given"
+    }
+  },
+  "required": ["title", "location", "listing_date", "listing_user"]
+}
