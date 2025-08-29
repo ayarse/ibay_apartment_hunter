@@ -1,11 +1,11 @@
-import { CheerioCrawler, Configuration } from 'crawlee';
-import { ConfigService } from '@/services';
-import type { Listing } from '@/util/types';
-import { Events, Locations } from '@/util/types';
-import { trimObjectValues } from '@/util';
-import { eventBus } from '@/events';
-import { env } from '@/config';
 import minifyHtml from '@minify-html/node';
+import { CheerioCrawler, Configuration } from 'crawlee';
+import { env } from '@/config';
+import { eventBus } from '@/events';
+import { ConfigService } from '@/services';
+import type { Listing } from '@/types';
+import { Events, Locations } from '@/types';
+import { trimObjectValues } from '@/util';
 
 const BASE_URL = process.env.IBAY_BASE_URL ?? 'https://ibay.com.mv';
 
@@ -126,7 +126,7 @@ export const ibayPageCrawler = new CheerioCrawler(
         '.details-sharing-options, .iw-300x250-d-ad, .iw-300x600-d-ad, script, style, div.clearfix.clear-columns',
       ).remove();
 
-      let cleanedHtml = $(SELECTORS.page).html();
+      const cleanedHtml = $(SELECTORS.page).html();
 
       const minifiedHtml = minifyHtml
         .minify(Buffer.from(cleanedHtml), {})

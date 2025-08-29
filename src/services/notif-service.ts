@@ -1,7 +1,7 @@
-import { UserService } from '.';
-import { bot } from '@/telegram';
 import { env } from '@/config';
-import { Listing } from '@/util/types';
+import { bot } from '@/telegram';
+import type { Listing } from '@/types';
+import { UserService } from '.';
 
 export const notifyAdmin = (message: string) => {
   bot.api.sendMessage(env.DEBUG_USER, message);

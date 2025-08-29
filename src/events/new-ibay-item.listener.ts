@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { listings } from '@/db/schema';
 import { ibayPageCrawler } from '@/scrapers';
 import { NotifService } from '@/services';
-import { Listing } from '@/util/types';
+import type { Listing } from '@/types';
 
 export const newIbayItemScraped = async (item: Listing) => {
   NotifService.notifyUsersByPref(item.location, item);

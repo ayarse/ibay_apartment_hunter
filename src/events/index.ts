@@ -1,4 +1,4 @@
-import { Events } from '@/util/types';
+import { Events } from '@/types';
 import { newIbayItemScraped } from './new-ibay-item.listener';
 import { ibayPageCrawler } from './new-ibay-page.listener';
 import { QueuedEventEmitter } from './queued-event-emitter';
