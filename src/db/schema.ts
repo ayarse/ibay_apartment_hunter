@@ -37,3 +37,4 @@ export const listings = pgTable('listings', {
 
 export type Config = typeof config.$inferSelect;
 export type Subscriber = typeof subscribers.$inferSelect;
+export type Listing = typeof listings.$inferSelect;

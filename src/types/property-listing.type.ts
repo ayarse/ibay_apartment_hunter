@@ -67,6 +67,13 @@ const PropertyRentalListingSchema = z.object({
     .optional()
     .describe('Rental price of the property'),
 
+  rental_price_type: z
+    .string()
+    .nullable()
+    .default('Monthly')
+    .optional()
+    .describe('Type of rental price (Monthly, Daily, Long Term Lease etc)'),
+
   rental_price_currency: z
     .string()
     .nullable()
@@ -103,6 +110,15 @@ const PropertyRentalListingSchema = z.object({
     .describe(
       'Physical amenities and facilities ONLY. Include: appliances, utilities, building features (lift, wifi, parking, washing_machine, etc.). EXCLUDE: subjective descriptions, location qualities, or abstract concepts.',
     ),
+
+  coordinates: z
+    .object({
+      latitude: z.number().nullable().optional(),
+      longitude: z.number().nullable().optional(),
+    })
+    .nullable()
+    .optional()
+    .describe('Coordinates of the property. Only if available.'),
 
   other_details: z
     .array(z.string())
