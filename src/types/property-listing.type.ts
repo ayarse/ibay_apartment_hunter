@@ -145,6 +145,21 @@ const PropertyRentalListingSchema = z.object({
     .nullable()
     .optional()
     .describe('Contact phone number given'),
+
+  // Meta
+  is_long_term_lease: z
+    .boolean()
+    .nullable()
+    .optional()
+    .describe('Is the listing a long term lease'),
+
+  maybe_mistake_listing: z
+    .boolean()
+    .nullable()
+    .optional()
+    .describe(
+      'Is the listing a mistake listing (eg: somebody looking for an apartment)',
+    ),
 });
 
 type PropertyRentalListing = z.infer<typeof PropertyRentalListingSchema>;
