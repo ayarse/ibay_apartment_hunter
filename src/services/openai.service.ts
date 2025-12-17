@@ -15,7 +15,7 @@ ${html}
 
 export async function convertHtmlToJson(html: string) {
   const response = await openai.chat.completions.create({
-    model: 'deepseek/deepseek-chat-v3.1',
+    model: 'deepseek/deepseek-chat-v3.2',
     temperature: 0,
     messages: [
       {
