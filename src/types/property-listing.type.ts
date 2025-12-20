@@ -3,16 +3,23 @@ import { z } from 'zod';
 const PropertyRentalListingSchema = z.object({
   title: z.string().describe('Title of the property listing'),
 
+  listing_type: z
+    .enum(['rental', 'long_term_lease', 'sale', 'wanted'])
+    .default('rental')
+    .describe(
+      'Type of listing: "rental" for monthly rentals, "long_term_lease" for multi-year leases with large upfront payments (typically >100k MVR), "sale" for properties being sold, "wanted" if someone is looking for a property (not offering one)',
+    ),
+
   property_type: z
     .enum(['apartment', 'house', 'godown', 'land', 'other'])
     .default('apartment')
-    .describe('Type of property being rented'),
+    .describe('Type of property'),
 
   available_from: z
     .string()
     .nullable()
     .optional()
-    .describe('Date when property becomes available for renting or lease'),
+    .describe('Date when property becomes available (YYYY-MM-DD format)'),
 
   location: z
     .enum(['Male', 'Villigili', 'Hulhumale', 'other'])
@@ -58,33 +65,79 @@ const PropertyRentalListingSchema = z.object({
     .optional()
     .describe('Number of bathrooms'),
 
+  // Rental pricing
   rental_price: z
     .number()
     .nullable()
     .optional()
-    .describe('Rental price of the property'),
-
-  rental_price_type: z
-    .string()
-    .nullable()
-    .default('Monthly')
-    .optional()
-    .describe('Type of rental price (Monthly, Daily, Long Term Lease etc)'),
+    .describe('Monthly rental price (for rental listings)'),
 
   rental_price_currency: z
-    .string()
+    .enum(['MVR', 'USD'])
+    .nullable()
+    .optional()
+    .describe('Currency of the rental price'),
+
+  // Long-term lease pricing
+  lease_price: z
+    .number()
     .nullable()
     .optional()
     .describe(
-      'Currency of the rental price (ISO 4217 preferred, e.g., MVR, USD)',
+      'Total lease price for long-term leases (usually large amounts like 100k-500k+ MVR for multi-year terms)',
     ),
 
+  lease_duration_years: z
+    .number()
+    .nullable()
+    .optional()
+    .describe('Duration of long-term lease in years (e.g., 5, 10, 15 years)'),
+
+  // Sale pricing
+  sale_price: z
+    .number()
+    .nullable()
+    .optional()
+    .describe('Sale price if property is for sale'),
+
+  sale_price_currency: z
+    .enum(['MVR', 'USD'])
+    .nullable()
+    .optional()
+    .describe('Currency of the sale price'),
+
+  // Deposit - structured
   deposit: z
-    .string()
+    .object({
+      months: z
+        .number()
+        .int()
+        .min(1)
+        .nullable()
+        .optional()
+        .describe(
+          'Number of months deposit required (e.g., "2 month deposit" = 2)',
+        ),
+      fixed_amount: z
+        .number()
+        .nullable()
+        .optional()
+        .describe('Fixed deposit amount if specified as currency value'),
+      currency: z
+        .enum(['MVR', 'USD'])
+        .nullable()
+        .optional()
+        .describe('Currency of fixed deposit amount'),
+      raw_text: z
+        .string()
+        .nullable()
+        .optional()
+        .describe('Original deposit text if parsing is ambiguous'),
+    })
     .nullable()
     .optional()
     .describe(
-      'Security Deposit or advance amount being asked for the property (raw text to capture different formats)',
+      'Security deposit details. Can be specified as months (e.g., "1 month", "2 months advance") or fixed amount',
     ),
 
   size: z
@@ -92,7 +145,7 @@ const PropertyRentalListingSchema = z.object({
     .nullable()
     .optional()
     .describe(
-      'Size of the property in square feet (if available). If not explicitly mentioned in square feet, return null.',
+      'Size of the property in square feet. Return null if not explicitly mentioned.',
     ),
 
   furnished_status: z
@@ -105,7 +158,7 @@ const PropertyRentalListingSchema = z.object({
     .array(z.string())
     .default([])
     .describe(
-      'Physical amenities and facilities ONLY. Include: appliances, utilities, building features (lift, wifi, parking, washing_machine, etc.). EXCLUDE: subjective descriptions, location qualities, or abstract concepts.',
+      'Physical amenities and facilities ONLY. Include: appliances, utilities, building features (lift, wifi, parking, washing_machine, ac, etc.). EXCLUDE: subjective descriptions or abstract concepts.',
     ),
 
   coordinates: z
@@ -121,7 +174,7 @@ const PropertyRentalListingSchema = z.object({
     .array(z.string())
     .default([])
     .describe(
-      'Other details mentioned (e.g., tenant preference, bills included)',
+      'Other details mentioned (e.g., tenant preference, bills included, no pets)',
     ),
 
   listing_date: z
@@ -129,7 +182,7 @@ const PropertyRentalListingSchema = z.object({
     .date()
     .nullable()
     .describe(
-      'Date when the listing was created. This is in the HTML as "Last Updated". Get in YYYY-MM-DD format. If not available, return null.',
+      'Date when the listing was created. Look for "Last Updated" in HTML. Store in Format: YYYY-MM-DD. Return null if not available.',
     ),
 
   listing_user: z
@@ -142,21 +195,6 @@ const PropertyRentalListingSchema = z.object({
     .nullable()
     .optional()
     .describe('Contact phone number given'),
-
-  // Meta
-  is_long_term_lease: z
-    .boolean()
-    .nullable()
-    .optional()
-    .describe('Is the listing a long term lease'),
-
-  maybe_mistake_listing: z
-    .boolean()
-    .nullable()
-    .optional()
-    .describe(
-      'Is the listing a mistake listing (eg: somebody looking for an apartment)',
-    ),
 });
 
 type PropertyRentalListing = z.infer<typeof PropertyRentalListingSchema>;
