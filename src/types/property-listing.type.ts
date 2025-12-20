@@ -84,7 +84,7 @@ const PropertyRentalListingSchema = z.object({
     .nullable()
     .optional()
     .describe(
-      'Deposit or advance amount being asked for the property (raw text to capture different formats)',
+      'Security Deposit or advance amount being asked for the property (raw text to capture different formats)',
     ),
 
   size: z
