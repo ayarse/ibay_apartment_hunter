@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import * as Sentry from '@sentry/node';
 import { and, count, eq, isNotNull, isNull } from 'drizzle-orm';
+import PQueue from 'p-queue';
 import { db } from '../src/db/index.js';
 import { listings } from '../src/db/schema.js';
 import { convertHtmlToJson } from '../src/services/openai.service.js';
@@ -21,11 +22,16 @@ class StructuredDataProcessor {
   };
 
   private batchSize: number;
+  private concurrency: number;
   private dryRun: boolean;
+  private queue: PQueue;
 
-  constructor(batchSize = 10, dryRun = false) {
+  constructor(batchSize = 50, concurrency = 5, dryRun = false) {
     this.batchSize = batchSize;
+    this.concurrency = concurrency;
     this.dryRun = dryRun;
+    // Add interval to avoid rate limits: max `concurrency` requests per 1 second
+    this.queue = new PQueue({ concurrency, interval: 1000, intervalCap: concurrency });
   }
 
   async run() {
@@ -33,6 +39,7 @@ class StructuredDataProcessor {
       '🚀 Starting structured data processing for existing listings...',
     );
     console.log(`📊 Batch size: ${this.batchSize}`);
+    console.log(`⚡ Concurrency: ${this.concurrency}`);
     console.log(`🔍 Dry run: ${this.dryRun ? 'YES' : 'NO'}`);
     console.log('');
 
@@ -64,11 +71,6 @@ class StructuredDataProcessor {
 
         offset += this.batchSize;
 
-        // Add a small delay between batches to avoid overwhelming the API
-        if (offset < this.stats.total) {
-          console.log('⏳ Waiting 2 seconds before next batch...');
-          await this.sleep(2000);
-        }
       }
 
       this.printFinalStats();
@@ -111,9 +113,35 @@ class StructuredDataProcessor {
       raw_data: string | null;
     }>,
   ) {
-    for (const listing of batch) {
-      await this.processListing(listing);
+    // Process all listings in the batch concurrently using the queue
+    await Promise.all(
+      batch.map((listing) => this.queue.add(() => this.processListing(listing))),
+    );
+  }
+
+  private getProgress(): string {
+    const done = this.stats.processed + this.stats.failed + this.stats.skipped;
+    const percent = ((done / this.stats.total) * 100).toFixed(1);
+    return `[${done}/${this.stats.total} ${percent}%]`;
+  }
+
+  private async withRetry<T>(
+    fn: () => Promise<T>,
+    maxRetries: number,
+  ): Promise<T> {
+    let lastError: Error | undefined;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error as Error;
+        if (attempt < maxRetries) {
+          const delay = Math.pow(2, attempt) * 1000; // Exponential backoff: 2s, 4s, 8s
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+      }
     }
+    throw lastError;
   }
 
   private async processListing(listing: {
@@ -124,31 +152,20 @@ class StructuredDataProcessor {
   }) {
     const { id, ibay_id, title, raw_data } = listing;
 
-    console.log(
-      `🔄 Processing listing ${id} (iBay ID: ${ibay_id}): ${title?.substring(0, 50)}...`,
-    );
-
     try {
       if (!raw_data || raw_data.trim() === '') {
-        console.log(`⚠️  Skipping listing ${id}: No raw data available`);
+        console.log(`${this.getProgress()} ⚠️  Skipped ${id}: No raw data`);
         this.stats.skipped++;
         return;
       }
 
-      // Convert HTML to structured JSON
-      const parsedData = await convertHtmlToJson(raw_data);
+      // Convert HTML to structured JSON with retry
+      const parsedData = await this.withRetry(() => convertHtmlToJson(raw_data), 3);
 
       if (this.dryRun) {
         console.log(
-          `✅ [DRY RUN] Would update listing ${id} with structured data`,
+          `${this.getProgress()} ✅ [DRY RUN] ${id}: ${parsedData.listing_type} - ${parsedData.location}`,
         );
-        console.log(`📋 Parsed data preview:`, {
-          title: parsedData.title,
-          property_type: parsedData.property_type,
-          location: parsedData.location,
-          rental_price: parsedData.rental_price,
-          bedrooms: parsedData.bedrooms,
-        });
       } else {
         // Update the listing with parsed data
         await db
@@ -159,13 +176,15 @@ class StructuredDataProcessor {
           .where(eq(listings.id, id));
 
         console.log(
-          `✅ Successfully updated listing ${id} with structured data`,
+          `${this.getProgress()} ✅ ${id}: ${parsedData.listing_type} - ${parsedData.location} - ${parsedData.rental_price ?? parsedData.lease_price ?? parsedData.sale_price ?? 'N/A'}`,
         );
       }
 
       this.stats.processed++;
     } catch (error) {
-      console.error(`❌ Failed to process listing ${id}:`, error.message);
+      console.error(
+        `${this.getProgress()} ❌ ${id}: ${(error as Error).message}`,
+      );
       Sentry.captureException(error, {
         extra: {
           listingId: id,
@@ -190,9 +209,6 @@ class StructuredDataProcessor {
     );
   }
 
-  private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 }
 
 // Main execution
@@ -200,12 +216,21 @@ async function main() {
   // Parse command line arguments
   const args = process.argv.slice(2);
   const batchSizeArg = args.find((arg) => arg.startsWith('--batch-size='));
+  const concurrencyArg = args.find((arg) => arg.startsWith('--concurrency='));
   const dryRunArg = args.includes('--dry-run');
 
-  const batchSize = batchSizeArg ? parseInt(batchSizeArg.split('=')[1]) : 10;
+  const batchSize = batchSizeArg ? parseInt(batchSizeArg.split('=')[1]) : 50;
+  const concurrency = concurrencyArg
+    ? parseInt(concurrencyArg.split('=')[1])
+    : 5;
 
   if (batchSize <= 0 || Number.isNaN(batchSize)) {
     console.error('❌ Invalid batch size. Must be a positive number.');
+    process.exit(1);
+  }
+
+  if (concurrency <= 0 || Number.isNaN(concurrency)) {
+    console.error('❌ Invalid concurrency. Must be a positive number.');
     process.exit(1);
   }
 
@@ -213,7 +238,7 @@ async function main() {
   console.log('==================================================');
   console.log('');
 
-  const processor = new StructuredDataProcessor(batchSize, dryRunArg);
+  const processor = new StructuredDataProcessor(batchSize, concurrency, dryRunArg);
 
   try {
     await processor.run();
