@@ -40,6 +40,11 @@ Currency: MRF/MVR/Rf/- = "MVR", $/USD = "USD". Default to MVR if ambiguous.
 
 ## ROOMS & FLOOR
 - "X room" typically means X bedrooms (e.g., "3 room apartment" → bedrooms: 3)
+- "X+1" notation means X bedrooms plus a maid room:
+  - "2+1" → bedrooms: 2, has_maid_room: true
+  - "3+1" → bedrooms: 3, has_maid_room: true
+  - "4+1" → bedrooms: 4, has_maid_room: true
+- Also set has_maid_room: true if listing mentions "maid room", "maids room", "helper room", or "store room" used as room
 - Look for explicit "bedroom", "bathroom", "toilet" counts
 - "attached bathroom" means bathroom is inside the bedroom
 - floor: "ground floor"/"G" = 0, "1st floor" = 1, "2nd floor" = 2, etc.

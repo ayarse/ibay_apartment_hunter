@@ -55,7 +55,15 @@ const PropertyRentalListingSchema = z.object({
     .min(0)
     .nullable()
     .optional()
-    .describe('Number of bedrooms'),
+    .describe('Number of bedrooms (for "2+1" format, this is 2)'),
+
+  has_maid_room: z
+    .boolean()
+    .nullable()
+    .optional()
+    .describe(
+      'True if listing mentions a maid room or uses "+1" notation (e.g., "2+1", "3+1")',
+    ),
 
   bathrooms: z
     .number()
