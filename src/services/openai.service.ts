@@ -1,10 +1,10 @@
-import OpenAI from 'openai';
-import { zodResponseFormat } from 'openai/helpers/zod';
+import { OpenRouter } from '@openrouter/sdk';
+import { z } from 'zod';
 import { PropertyRentalListingSchema } from '@/types/property-listing.type';
+import { env } from '@/config';
 
-const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENAI_API_KEY,
+const openRouter = new OpenRouter({
+  apiKey: env.OPENROUTER_API_KEY,
 });
 
 const userPrompt = (html: string) => `
@@ -14,7 +14,7 @@ ${html}
 `;
 
 export async function convertHtmlToJson(html: string) {
-  const response = await openai.chat.completions.create({
+  const response = await openRouter.chat.send({
     model: 'deepseek/deepseek-v3.2',
     temperature: 0,
     messages: [
@@ -28,12 +28,21 @@ export async function convertHtmlToJson(html: string) {
         content: userPrompt(html),
       },
     ],
-    response_format: zodResponseFormat(PropertyRentalListingSchema, 'data'),
+    responseFormat: {
+      type: 'json_schema',
+      jsonSchema: {
+        name: 'property_rental_listing',
+        schema: z.toJSONSchema(PropertyRentalListingSchema),
+      },
+    },
   });
 
-  const parsed = PropertyRentalListingSchema.safeParse(
-    JSON.parse(response.choices[0].message.content),
-  );
+  const content = response.choices[0].message.content;
+  if (!content || typeof content !== 'string') {
+    throw new Error('No response content from model');
+  }
+
+  const parsed = PropertyRentalListingSchema.safeParse(JSON.parse(content));
 
   if (!parsed.success) {
     throw new Error(parsed.error.message);

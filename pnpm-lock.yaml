@@ -11,6 +11,9 @@ importers:
       '@minify-html/node':
         specifier: ^0.16.4
         version: 0.16.4
+      '@openrouter/sdk':
+        specifier: ^0.3.10
+        version: 0.3.10
       '@sentry/node':
         specifier: ^10.5.0
         version: 10.5.0
@@ -34,7 +37,7 @@ importers:
         version: 9.2.0(grammy@1.38.1)
       openai:
         specifier: ^5.16.0
-        version: 5.16.0(ws@8.18.1)(zod@3.25.76)
+        version: 5.16.0(ws@8.18.1)(zod@4.2.1)
       p-queue:
         specifier: ^9.0.0
         version: 9.0.0
@@ -47,12 +50,9 @@ importers:
       pino-pretty:
         specifier: ^13.1.1
         version: 13.1.1
-      znv:
-        specifier: ^0.5.0
-        version: 0.5.0(zod@3.25.76)
       zod:
-        specifier: ^3.24.2
-        version: 3.25.76
+        specifier: 4.2.1
+        version: 4.2.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.0
@@ -604,6 +604,9 @@ packages:
     resolution: {integrity: sha512-ykQgl6xcQQDE1shUExeObPSNwAf00DVUt/GrxdjiqFNCVGu7DXK9nuH29sNTyKKYnJJLZAi6OEib2bDfxW3udg==}
     engines: {node: '>= 8.6.0'}
     hasBin: true
+
+  '@openrouter/sdk@0.3.10':
+    resolution: {integrity: sha512-FNOwLn/GvOw1Xk+x36bC1vtDwLIo45yIEoBwin+Dhb4j9DoRVBW2h9L/1rjNd7ILpyj9lB3LBhaLmateOt4Wrg==}
 
   '@opentelemetry/api-logs@0.203.0':
     resolution: {integrity: sha512-9B9RU0H7Ya1Dx/Rkyc4stuBZSGVQF27WigitInx2QQoj6KUpEFYPKoWjdFTunJYxmXmh17HeBvbMa1EhGyPmqQ==}
@@ -2268,13 +2271,8 @@ packages:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
-  znv@0.5.0:
-    resolution: {integrity: sha512-o4s0CemQU7+ByxBQQnqe72QtlVDsw1GAPxBbTCbQP3sNe7/5bztRJ8fUf2dbOuhZrMapWe82hpOTBZ7QVnjZ2g==}
-    peerDependencies:
-      zod: ^3.24.2
-
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+  zod@4.2.1:
+    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
 
 snapshots:
 
@@ -2777,6 +2775,10 @@ snapshots:
       '@minify-html/node-linux-arm64': 0.16.4
       '@minify-html/node-linux-x64': 0.16.4
       '@minify-html/node-win32-x64': 0.16.4
+
+  '@openrouter/sdk@0.3.10':
+    dependencies:
+      zod: 4.2.1
 
   '@opentelemetry/api-logs@0.203.0':
     dependencies:
@@ -3977,10 +3979,10 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openai@5.16.0(ws@8.18.1)(zod@3.25.76):
+  openai@5.16.0(ws@8.18.1)(zod@4.2.1):
     optionalDependencies:
       ws: 8.18.1
-      zod: 3.25.76
+      zod: 4.2.1
 
   ora@5.4.1:
     dependencies:
@@ -4493,8 +4495,4 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  znv@0.5.0(zod@3.25.76):
-    dependencies:
-      zod: 3.25.76
-
-  zod@3.25.76: {}
+  zod@4.2.1: {}

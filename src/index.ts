@@ -97,7 +97,7 @@ const shutdown = async (signal: string) => {
     logger.info('Graceful shutdown completed');
     process.exit(0);
   } catch (error) {
-    logger.error('Error during graceful shutdown:', error);
+    logger.error(error, 'Error during graceful shutdown');
     Sentry.captureException(error);
     process.exit(1);
   }

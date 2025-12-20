@@ -1,15 +1,12 @@
 import { z } from 'zod';
 
 const PropertyRentalListingSchema = z.object({
-  title: z.string({
-    description: 'Title of the property listing',
-  }),
+  title: z.string().describe('Title of the property listing'),
 
   property_type: z
-    .enum(['apartment', 'house', 'godown', 'land', 'other'], {
-      description: 'Type of property being rented',
-    })
-    .default('apartment'),
+    .enum(['apartment', 'house', 'godown', 'land', 'other'])
+    .default('apartment')
+    .describe('Type of property being rented'),
 
   available_from: z
     .string()
