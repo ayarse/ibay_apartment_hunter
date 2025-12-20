@@ -31,6 +31,16 @@ Currency: MRF/MVR/Rf/- = "MVR", $/USD = "USD". Default to MVR if ambiguous.
 - wanted: Someone LOOKING for a property (not offering one). They want to rent/buy, not listing their own.
 - rental: Monthly rentals (default). Usually 5k-30k MVR/month.
 
+## IRRELEVANT LISTINGS (set is_irrelevant: true)
+Mark as irrelevant if the listing is NOT about a property:
+- Moving/relocation/transport services
+- Seeking investors or business partners
+- Other services (cleaning, maintenance, construction)
+- Spam or unrelated content
+
+Set irrelevant_reason to a brief description (e.g., "moving service", "seeking investor").
+
+
 ## PROPERTY & LOCATION
 - property_type: apartment (default), house, godown (warehouse/storage), land (empty plot)
 - location: Male, Hulhumale, Villigili, other

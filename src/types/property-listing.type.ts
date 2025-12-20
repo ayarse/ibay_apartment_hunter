@@ -10,6 +10,19 @@ const PropertyRentalListingSchema = z.object({
       'Type of listing: "rental" for monthly rentals, "long_term_lease" for multi-year leases with large upfront payments (typically >100k MVR), "sale" for properties being sold, "wanted" if someone is looking for a property (not offering one)',
     ),
 
+  is_irrelevant: z
+    .boolean()
+    .default(false)
+    .describe(
+      'True if this is NOT a valid property listing (e.g., moving services, seeking investors, spam)',
+    ),
+
+  irrelevant_reason: z
+    .string()
+    .nullable()
+    .optional()
+    .describe('Brief reason why listing is irrelevant (only set if is_irrelevant is true)'),
+
   property_type: z
     .enum(['apartment', 'house', 'godown', 'land', 'other'])
     .default('apartment')
