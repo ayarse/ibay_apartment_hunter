@@ -75,6 +75,8 @@ export default async function initCommands() {
     const message = `
 📊 *User Statistics Summary*
 
+🐛 *DEBUG MODE:* ${env.DEBUG}
+
 👥 *Total Users:* ${stats.total}
 ✅ *Active Users:* ${stats.active}
 🚫 *Blocked Users:* ${stats.blocked}
