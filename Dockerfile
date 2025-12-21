@@ -4,28 +4,27 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /usr/src/app
 
-# Enable pnpm 10.x
 RUN corepack enable && corepack prepare pnpm@10 --activate
+
+# Create non-root user early
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy source code
-COPY . .
 
 # Set production environment
 ENV NODE_ENV=production
 ENV NODE_OPTIONS="--dns-result-order=ipv4first"
 
-# Create non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Install production dependencies only
+RUN pnpm install --frozen-lockfile --prod
+
+# Copy source code
+COPY . .
+
+# Fix ownership and switch to non-root user
+RUN chown -R appuser:appgroup /usr/src/app
 USER appuser
 
-# Health check
-HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
-
-# Start the app
+# Start the app with tsx
 CMD ["pnpm", "start"]
