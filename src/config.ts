@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { z } from 'zod';
 
 const envSchema = z.object({
-  DEBUG: z.coerce.boolean().default(true),
+  DEBUG: z.stringbool().default(true),
   DEBUG_USER: z.string(),
   TIME_INTERVAL: z.coerce.number().default(10),
 
