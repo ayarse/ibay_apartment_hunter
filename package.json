@@ -17,8 +17,8 @@
     "drizzle:generate": "drizzle-kit generate",
     "drizzle:migrate": "drizzle-kit migrate",
     "lint": "biome format --write",
-    "script:add-structured-data": "tsx ./scripts/add-structured-data-to-existing.ts",
-    "script:test-parsing": "tsx ./scripts/test-openrouter-parsing.ts"
+    "script:add-structured-data": "tsx ./scripts/add-structured-data.ts",
+    "script:test-parsing": "tsx ./scripts/test-parsing.ts"
   },
   "author": "ayarse",
   "license": "MIT",

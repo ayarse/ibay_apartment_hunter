@@ -1,6 +1,6 @@
 import { Events } from '@/types';
-import { newIbayItemScraped } from './new-ibay-item.listener';
-import { ibayPageCrawler } from './new-ibay-page.listener';
+import { newIbayItemScraped } from './ibay-item.listener';
+import { ibayPageCrawler } from './ibay-page.listener';
 import { QueuedEventEmitter } from './queued-event-emitter';
 
 const eventBus = new QueuedEventEmitter();

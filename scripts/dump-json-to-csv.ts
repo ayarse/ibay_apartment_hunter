@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { db } from '../src/db/index.js';
 import { listings } from '../src/db/schema.js';
-import type { PropertyRentalListing } from '../src/types/property-listing.type.js';
+import type { PropertyRentalListing } from '../src/types/property-listing';
 
 async function dumpJsonToCsv() {
   try {

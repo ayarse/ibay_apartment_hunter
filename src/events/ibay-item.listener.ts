@@ -1,11 +1,11 @@
 import { db } from '@/db';
 import { listings } from '@/db/schema';
 import { ibayPageCrawler } from '@/scrapers';
-import { NotifService } from '@/services';
+import { NotificationService } from '@/services';
 import type { Listing } from '@/types';
 
 export const newIbayItemScraped = async (item: Listing) => {
-  NotifService.notifyUsersByPref(item.location, item);
+  NotificationService.notifyUsersByPref(item.location, item);
 
   await db
     .insert(listings)

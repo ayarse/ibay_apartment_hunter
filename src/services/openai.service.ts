@@ -1,6 +1,6 @@
 import { OpenRouter } from '@openrouter/sdk';
 import { z } from 'zod';
-import { PropertyRentalListingSchema } from '@/types/property-listing.type';
+import { PropertyRentalListingSchema } from '@/types/property-listing';
 import { env } from '@/config';
 
 const openRouter = new OpenRouter({

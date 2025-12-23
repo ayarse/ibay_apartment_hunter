@@ -7,7 +7,7 @@ import { db } from './db';
 
 import './events';
 import { ibayPageCrawler, IBayScraper } from './scrapers';
-import { notifyAdmin } from './services/notif-service';
+import { notifyAdmin } from './services/notification.service';
 import initCommands from './telegram/commands';
 import { minsToMs } from './util';
 
