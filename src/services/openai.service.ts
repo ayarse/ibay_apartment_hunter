@@ -90,6 +90,9 @@ export async function convertHtmlToJson(html: string) {
   const response = await openRouter.chat.send({
     model: 'deepseek/deepseek-v3.2',
     temperature: 0,
+    provider: {
+      requireParameters: true,
+    },
     messages: [
       {
         role: 'system',
@@ -107,6 +110,7 @@ export async function convertHtmlToJson(html: string) {
         schema: z.toJSONSchema(PropertyRentalListingSchema),
       },
     },
+    plugins: [{ id: 'response-healing' }],
   });
 
   const content = response.choices[0].message.content;
